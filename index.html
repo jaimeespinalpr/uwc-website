@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>United Wrestling Club | Spring Session 2026</title>
+  <meta
+    name="description"
+    content="United Wrestling Club - Spring Session 2026. Registration opens soon. Season runs from March 9, 2026 to May 28, 2026."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --blue-900: #072a63;
+      --blue-800: #0a3d8b;
+      --blue-700: #1452aa;
+      --blue-600: #1d63c9;
+      --orange: #ff8f1f;
+      --orange-2: #ffb259;
+      --white: #ffffff;
+      --ink: #dfeaff;
+      --panel: rgba(255, 255, 255, 0.08);
+      --panel-strong: rgba(255, 255, 255, 0.12);
+      --border: rgba(255, 255, 255, 0.16);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--white);
+      font-family: "Barlow Condensed", sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255, 143, 31, 0.15), transparent 35%),
+        radial-gradient(circle at 90% 15%, rgba(255, 255, 255, 0.08), transparent 40%),
+        linear-gradient(160deg, #041a42 0%, #08295f 45%, #0b3f8f 100%);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 22px 22px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 100%);
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    .container {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page {
+      padding: 28px 0 40px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+      box-shadow: var(--shadow);
+      padding: 28px;
+      animation: fadeUp 500ms ease-out both;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: auto -80px -120px auto;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 143, 31, 0.45), rgba(255, 143, 31, 0));
+      filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: -8%;
+      right: -8%;
+      bottom: -62px;
+      height: 140px;
+      background: linear-gradient(90deg, var(--orange), #ff9c35);
+      transform: rotate(-4deg);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 143, 31, 0.12);
+      color: #ffd8a8;
+      border: 1px solid rgba(255, 143, 31, 0.35);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      letter-spacing: 0.4px;
+      margin-bottom: 12px;
+    }
+
+    .badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 0 6px rgba(255, 143, 31, 0.18);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--ink);
+      font-size: 1.05rem;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    h1 {
+      margin: 6px 0 8px;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(2.4rem, 7vw, 5.2rem);
+      line-height: 0.92;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 60ch;
+      color: #e8f0ff;
+      font-size: 1.15rem;
+      line-height: 1.35;
+    }
+
+    .subtitle strong {
+      color: #ffffff;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+      border: 1px solid transparent;
+      transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+      cursor: pointer;
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.45);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, var(--orange-2), var(--orange));
+      color: #1f1200;
+      box-shadow: 0 10px 24px rgba(255, 143, 31, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.24);
+      backdrop-filter: blur(6px);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-meta {
+      margin-top: 12px;
+      color: #d4e4ff;
+      font-size: 1rem;
+      letter-spacing: 0.2px;
+    }
+
+    .price-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      text-align: left;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .price-card .label {
+      color: #cfe0ff;
+      text-transform: uppercase;
+      letter-spacing: 1.3px;
+      font-size: 0.9rem;
+    }
+
+    .price-card .amount {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 4rem;
+      line-height: 0.9;
+      margin: 8px 0 10px;
+      color: #fff;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+
+    .price-card .range {
+      font-size: 1.05rem;
+      color: #eaf2ff;
+      line-height: 1.25;
+    }
+
+    .price-card .note {
+      margin-top: 12px;
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #dbe8ff;
+      font-size: 0.95rem;
+    }
+
+    .section {
+      margin-top: 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel-strong), var(--panel));
+      box-shadow: var(--shadow);
+      padding: 20px;
+      animation: fadeUp 600ms ease-out both;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.8px;
+      color: #fff;
+    }
+
+    .section h2 .accent {
+      color: var(--orange);
+    }
+
+    .section-intro {
+      margin: 0 0 14px;
+      color: #d7e5ff;
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .class-card {
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .class-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: var(--orange);
+    }
+
+    .class-card h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: 0.2px;
+    }
+
+    .class-card .age {
+      margin-top: 4px;
+      color: #bcd2ff;
+      font-size: 1rem;
+    }
+
+    .class-card .time {
+      margin-top: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .class-card .track {
+      margin-top: 4px;
+      color: #dbe7ff;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+
+    .legend {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      margin-top: 4px;
+      flex: 0 0 auto;
+    }
+
+    .dot.red { background: #ff5a5a; }
+    .dot.white { background: #f5f7ff; border: 1px solid rgba(0,0,0,0.2); }
+    .dot.blue { background: #4ea0ff; }
+
+    .legend-item strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
+
+    .legend-item span {
+      color: #d7e5ff;
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .pricing-card {
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .pricing-card .kicker {
+      color: #bcd2ff;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .pricing-card .big {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      margin: 6px 0 4px;
+      color: #fff;
+    }
+
+    .pricing-card .small {
+      color: #dbe8ff;
+      font-size: 0.95rem;
+      line-height: 1.2;
+    }
+
+    .pricing-card.highlight {
+      background: linear-gradient(180deg, rgba(255,143,31,0.14), rgba(255,143,31,0.08));
+      border-color: rgba(255,143,31,0.35);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 14px;
+    }
+
+    .info-card {
+      border-radius: 16px;
+      padding: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .info-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      color: #fff;
+    }
+
+    .info-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      color: #e7efff;
+      font-size: 1.05rem;
+    }
+
+    .info-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .info-list li::before {
+      content: "•";
+      color: var(--orange);
+      line-height: 1;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+
+    .coaches-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 16px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #e7efff;
+      font-size: 1.02rem;
+    }
+
+    .coaches-grid li {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .waitlist {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .waitlist::before {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.14), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .waitlist p {
+      margin: 0 0 12px;
+      color: #e8f0ff;
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 10px;
+    }
+
+    .input {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      padding: 12px 14px;
+      font: inherit;
+    }
+
+    .input::placeholder {
+      color: #c8d9ff;
+      opacity: 0.85;
+    }
+
+    .input:focus-visible {
+      outline: 2px solid rgba(255,255,255,0.4);
+      outline-offset: 1px;
+    }
+
+    .micro {
+      margin-top: 8px;
+      color: #c9dbff;
+      font-size: 0.92rem;
+    }
+
+    .footer {
+      margin-top: 14px;
+      text-align: center;
+      color: #c6d9ff;
+      font-size: 0.95rem;
+      padding-bottom: 8px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 950px) {
+      .hero-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .price-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding-top: 16px;
+      }
+
+      .hero,
+      .section {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .hero::after {
+        height: 120px;
+        bottom: -72px;
+      }
+
+      .schedule-grid,
+      .legend,
+      .pricing-grid,
+      .coaches-grid,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-row {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .price-card .amount {
+        font-size: 3.4rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container page">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="badge">Registration opens soon</div>
+
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">United Wrestling Club (UWC)</p>
+          <h1 id="hero-title">Spring Session 2026</h1>
+          <p class="subtitle">
+            Registration spots will open soon. The season starts in early March:
+            <strong>March 9, 2026</strong>.
+          </p>
+
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#waitlist">Notify Me</a>
+            <a class="btn btn-secondary" href="#schedule">View Schedule</a>
+          </div>
+
+          <p class="hero-meta">
+            Season: <strong>March 9, 2026</strong> to <strong>May 28, 2026</strong> ·
+            Location: <strong>Saint Edmond's Academy</strong>
+          </p>
+        </div>
+
+        <aside class="price-card" aria-label="Session cost">
+          <div class="label">Session Cost</div>
+          <div class="amount">$285</div>
+          <div class="range">
+            Spring Session 2026<br />
+            March 9, 2026 to May 28, 2026
+          </div>
+          <div class="note">Limited spots · Registration coming soon</div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="schedule" aria-labelledby="schedule-title">
+      <h2 id="schedule-title"><span class="accent">Schedule</span> and Groups</h2>
+      <p class="section-intro">
+        Based on the information you shared: ages, levels, and schedule for Spring Session 2026.
+      </p>
+
+      <div class="schedule-grid">
+        <article class="class-card">
+          <h3>Mixed (Red)</h3>
+          <div class="age">Ages 5-10</div>
+          <div class="time">Monday & Wednesday · 6:00 PM - 6:45 PM</div>
+          <div class="track">Novice / Developmental</div>
+        </article>
+
+        <article class="class-card">
+          <h3>Intro (White/Intro)</h3>
+          <div class="age">Ages 11-13</div>
+          <div class="time">Tuesday & Thursday · 6:00 PM - 6:45 PM</div>
+          <div class="track">Intro / Developmental</div>
+        </article>
+
+        <article class="class-card">
+          <h3>Dev / Adv (White)</h3>
+          <div class="age">Ages 11-13</div>
+          <div class="time">Monday & Wednesday · 7:00 PM - 8:15 PM</div>
+          <div class="track">Developmental & Advanced</div>
+        </article>
+
+        <article class="class-card">
+          <h3>Advanced (Blue)</h3>
+          <div class="age">Ages 14+</div>
+          <div class="time">Tuesday & Thursday · 7:00 PM - 8:15 PM</div>
+          <div class="track">Advanced wrestlers only</div>
+        </article>
+      </div>
+
+      <div class="legend" aria-label="Level descriptions">
+        <div class="legend-item">
+          <span class="dot red" aria-hidden="true"></span>
+          <div>
+            <strong>Red</strong>
+            <span>Ages 5-10, novice and developmental.</span>
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="dot white" aria-hidden="true"></span>
+          <div>
+            <strong>White</strong>
+            <span>Ages 11-13, developmental and advanced.</span>
+          </div>
+        </div>
+
+        <div class="legend-item">
+          <span class="dot blue" aria-hidden="true"></span>
+          <div>
+            <strong>Blue</strong>
+            <span>Ages 14+, advanced wrestlers only.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <h2 id="pricing-title"><span class="accent">Pricing</span> and Discounts</h2>
+      <div class="pricing-grid">
+        <article class="pricing-card">
+          <div class="kicker">Session</div>
+          <div class="big">$285</div>
+          <div class="small">Per athlete (Spring Session 2026)</div>
+        </article>
+
+        <article class="pricing-card">
+          <div class="kicker">2nd Child</div>
+          <div class="big">50% OFF</div>
+          <div class="small">$142.50 discount</div>
+        </article>
+
+        <article class="pricing-card">
+          <div class="kicker">3rd Child</div>
+          <div class="big">25% OFF</div>
+          <div class="small">$71.25 discount</div>
+        </article>
+
+        <article class="pricing-card highlight">
+          <div class="kicker">SEA / Sallies / Archmere</div>
+          <div class="big">50% OFF</div>
+          <div class="small">Special price: $142</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="details" aria-labelledby="details-title">
+      <h2 id="details-title"><span class="accent">Program</span> Details</h2>
+
+      <div class="two-col">
+        <article class="info-card">
+          <h3>General Information</h3>
+          <ul class="info-list">
+            <li>United Wrestling Club (UWC) Spring Session 2026</li>
+            <li>Season start: March 9, 2026 (early March)</li>
+            <li>Season end: May 28, 2026</li>
+            <li>Location: Saint Edmond's Academy</li>
+            <li>Private lessons available (ask for availability, Monday-Thursday)</li>
+            <li>Registration: spots opening soon</li>
+          </ul>
+        </article>
+
+        <article class="info-card">
+          <h3>Coaches</h3>
+          <ul class="coaches-grid">
+            <li>Jaime Espinal</li>
+            <li>Jane Valencia</li>
+            <li>Gary Munch</li>
+            <li>Critter Witte</li>
+            <li>Sam Munch</li>
+            <li>Zach Spence</li>
+            <li>Chris Sizemore</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section waitlist" id="waitlist" aria-labelledby="registration-title">
+      <h2 id="registration-title"><span class="accent">Registration</span> Coming Soon</h2>
+      <p>
+        Registration is not open yet. Leave your information and we will notify you when
+        spots open for Spring Session 2026.
+      </p>
+
+      <!-- Replace action="#" with your real registration form/link when registration opens -->
+      <form action="#" method="post">
+        <div class="form-row">
+          <input class="input" type="text" name="name" placeholder="Parent/Guardian Name" />
+          <input class="input" type="email" name="email" placeholder="Email Address" />
+          <button class="btn btn-primary" type="submit">Notify Me</button>
+        </div>
+      </form>
+
+      <p class="micro">
+        You can also replace this form with a direct registration button when enrollment opens.
+      </p>
+    </section>
+
+    <div class="footer">
+      United Wrestling Club · Spring Session 2026 · Saint Edmond's Academy
+    </div>
+  </main>
+</body>
+</html>
