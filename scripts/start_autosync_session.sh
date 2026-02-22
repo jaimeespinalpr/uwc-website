@@ -17,7 +17,10 @@ if command -v screen >/dev/null 2>&1; then
     exit 0
   fi
 
-  screen -L -Logfile "${LOG_FILE}" -dmS "${SCREEN_SESSION}" /bin/bash "${REPO_ROOT}/scripts/auto_sync_loop.sh" "${REPO_ROOT}"
+  screen -dmS "${SCREEN_SESSION}" /usr/bin/env \
+    AUTO_SYNC_REPO="${REPO_ROOT}" \
+    AUTO_SYNC_LOG="${LOG_FILE}" \
+    /bin/bash -lc '"$AUTO_SYNC_REPO/scripts/auto_sync_loop.sh" "$AUTO_SYNC_REPO" >> "$AUTO_SYNC_LOG" 2>&1'
   echo "Auto-sync started in detached screen session: ${SCREEN_SESSION}"
   echo "Log: ${LOG_FILE}"
   echo "To view live output: screen -r ${SCREEN_SESSION}"
