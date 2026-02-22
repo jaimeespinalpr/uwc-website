@@ -43,5 +43,5 @@ bash scripts/stop_autosync_macos.sh
 Notes:
 
 - GitHub Pages updates automatically after each push.
-- If the repo is inside a protected macOS folder (like `Documents`), the installer will automatically use a session-based auto-sync process instead of `launchd`.
+- If the repo is inside a protected macOS folder (like `Documents`), the installer will automatically use a detached `screen` session (or `nohup` if `screen` is unavailable) instead of `launchd`.
 - If two computers edit the same lines at the same time, a manual merge/conflict fix may still be needed.
