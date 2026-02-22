@@ -13,6 +13,17 @@ STDERR_LOG="${LOG_DIR}/uwc-website-autosync.err.log"
 
 mkdir -p "${HOME}/Library/LaunchAgents" "${LOG_DIR}"
 
+case "${REPO_ROOT}" in
+  "${HOME}/Documents"/*|"${HOME}/Desktop"/*|"${HOME}/Downloads"/*)
+    echo "This repo is inside a macOS protected folder: ${REPO_ROOT}"
+    echo "Background launchd services may be blocked from reading it."
+    echo "Starting session-based auto-sync instead (works from your current user session)."
+    echo "You can move the repo outside Documents/Desktop/Downloads later if you want launchd."
+    /bin/bash "${REPO_ROOT}/scripts/start_autosync_session.sh"
+    exit 0
+    ;;
+esac
+
 cat > "${PLIST_PATH}" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
