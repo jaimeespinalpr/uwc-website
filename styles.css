@@ -1458,6 +1458,10 @@ body::before {
   padding: 22px;
 }
 
+.hero-grid-single {
+  grid-template-columns: 1fr;
+}
+
 .hero h1 {
   color: var(--white);
   font-family: "Teko", sans-serif;
@@ -1466,6 +1470,32 @@ body::before {
   letter-spacing: 0.03em;
   text-transform: uppercase;
   margin: 8px 0 10px;
+}
+
+.hero h1 .hero-title-main,
+.hero h1 .hero-year,
+.hero h1 .hero-date {
+  display: block;
+}
+
+.hero h1 .hero-title-main {
+  font-size: 0.84em;
+}
+
+.hero h1 .hero-year {
+  font-size: 1.3em;
+  line-height: 0.74;
+  letter-spacing: 0.05em;
+}
+
+.hero h1 .hero-date {
+  margin-top: 10px;
+  color: rgba(234, 242, 255, 0.92);
+  font-family: "Inter Tight", sans-serif;
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
 }
 
 .hero-copy {
@@ -1538,6 +1568,19 @@ body::before {
   background: #fff;
   border-color: var(--line);
   color: var(--navy-900);
+}
+
+.hero-lower-card {
+  margin: 0 22px 22px;
+  z-index: 1;
+}
+
+.hero-lower-card .stack-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hero-lower-card .btn {
+  justify-self: start;
 }
 
 .stack-list li {
@@ -2001,6 +2044,10 @@ textarea:focus-visible {
     font-size: clamp(2.6rem, 12vw, 4.4rem);
   }
 
+  .hero h1 .hero-date {
+    letter-spacing: 0.1em;
+  }
+
   .page-hero h1 {
     font-size: clamp(2.3rem, 10vw, 3.8rem);
   }
@@ -2029,6 +2076,14 @@ textarea:focus-visible {
   .page-hero,
   .site-footer {
     padding: 14px;
+  }
+
+  .hero-lower-card {
+    margin: 0 14px 14px;
+  }
+
+  .hero-lower-card .stack-list {
+    grid-template-columns: 1fr;
   }
 
   .btn,
