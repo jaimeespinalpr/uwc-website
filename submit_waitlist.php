@@ -134,12 +134,11 @@ function save_submission_csv(string $csvPath, array $submission): bool
 
     try {
         if (!flock($handle, LOCK_EX)) {
-            fclose($handle);
             return false;
         }
 
         if ($isNewFile) {
-          fputcsv($handle, array_keys($submission));
+            fputcsv($handle, array_keys($submission));
         }
 
         fputcsv($handle, array_values($submission));
@@ -238,4 +237,3 @@ function log_waitlist_error(string $message): void
     $line = '[' . gmdate('c') . '] ' . $message . PHP_EOL;
     @file_put_contents(WAITLIST_ERROR_LOG, $line, FILE_APPEND | LOCK_EX);
 }
-
