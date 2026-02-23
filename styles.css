@@ -913,6 +913,11 @@ img {
   background: #eef2f7;
 }
 
+.coach-photo-jane {
+  /* Shift visual crop left so Jane's face (right side of source image) stays fully visible. */
+  object-position: 73% center;
+}
+
 .coach-role {
   margin: 0 0 4px;
   font-family: "Teko", sans-serif;
