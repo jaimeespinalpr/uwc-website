@@ -12,6 +12,8 @@ define('WAITLIST_CONTACT_PHONE', '');                      // Optional: e.g. +1 
 
 define('WAITLIST_FROM_NAME', 'United Wrestling Club');
 define('WAITLIST_FROM_EMAIL', 'noreply@united-wc.com');    // Best if this mailbox exists on your domain
+define('WAITLIST_SITE_URL', 'https://united-wc.com');
+define('WAITLIST_LOGO_URL', 'https://united-wc.com/assets/uwc-logo.png');
 
 define('WAITLIST_STORAGE_CSV', __DIR__ . '/data/waitlist_submissions.csv');
 define('WAITLIST_ERROR_LOG', __DIR__ . '/data/waitlist_errors.log');
