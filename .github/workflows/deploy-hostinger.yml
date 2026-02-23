@@ -7,7 +7,9 @@ on:
     paths:
       - "*.html"
       - "*.css"
+      - "*.php"
       - "assets/**"
+      - "data/**"
       - ".github/workflows/deploy-hostinger.yml"
   workflow_dispatch:
 

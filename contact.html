@@ -68,23 +68,25 @@
             Families who join here can be notified as soon as registration opens for Spring Session 2026.
           </p>
 
-          <form action="#" method="post">
+          <form action="submit_waitlist.php" method="post">
             <div class="form-grid">
+              <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot-field" aria-hidden="true" />
+
               <div class="field-row">
                 <label>
                   Parent / Guardian Name
-                  <input type="text" name="guardian_name" placeholder="Enter full name" />
+                  <input type="text" name="guardian_name" placeholder="Enter full name" required />
                 </label>
                 <label>
                   Email Address
-                  <input type="email" name="email" placeholder="name@example.com" />
+                  <input type="email" name="email" placeholder="name@example.com" required />
                 </label>
               </div>
 
               <div class="field-row">
                 <label>
                   Athlete Age
-                  <select id="age-group-select" name="athlete_age_group">
+                  <select id="age-group-select" name="athlete_age_group" required>
                     <option value="">Select age group</option>
                     <option value="5-10">Ages 5-10</option>
                     <option value="11-13">Ages 11-13</option>
@@ -93,7 +95,7 @@
                 </label>
                 <label>
                   Preferred Class Type
-                  <select id="class-interest-select" name="class_interest" disabled>
+                  <select id="class-interest-select" name="class_interest" disabled required>
                     <option value="">Select age group first</option>
                   </select>
                 </label>
@@ -110,8 +112,7 @@
             </div>
 
             <p class="micro">
-              Placeholder form only. To activate, replace <code>action="#"</code> with your real form endpoint
-              or registration link.
+              You will receive a confirmation email after joining the waitlist.
             </p>
           </form>
         </div>
@@ -152,6 +153,29 @@
   </main>
   <script>
     (function () {
+      var formCard = document.querySelector(".form-card");
+      var urlParams = new URLSearchParams(window.location.search);
+      var status = urlParams.get("status");
+      var msg = urlParams.get("msg");
+
+      if (formCard && status) {
+        var notice = document.createElement("div");
+        notice.className = "form-status-banner";
+
+        if (status === "success") {
+          notice.classList.add("is-success");
+          notice.innerHTML = "<strong>Thank you.</strong> You have been added to the waitlist. Please check your email for confirmation.";
+        } else if (status === "partial") {
+          notice.classList.add("is-warning");
+          notice.innerHTML = "<strong>Submitted.</strong> Your waitlist request was received, but the email confirmation could not be sent.";
+        } else {
+          notice.classList.add("is-error");
+          notice.innerHTML = "<strong>We could not submit the form.</strong> " + (msg || "Please try again.");
+        }
+
+        formCard.insertBefore(notice, formCard.children[2] || null);
+      }
+
       var ageSelect = document.getElementById("age-group-select");
       var classSelect = document.getElementById("class-interest-select");
 

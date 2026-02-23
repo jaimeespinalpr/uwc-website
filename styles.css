@@ -1176,6 +1176,46 @@ img {
   gap: 10px;
 }
 
+.honeypot-field {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.form-status-banner {
+  margin: 12px 0 0;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 11px 12px;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.form-status-banner strong {
+  color: inherit;
+}
+
+.form-status-banner.is-success {
+  background: rgba(15, 118, 110, 0.06);
+  border-color: rgba(15, 118, 110, 0.25);
+  color: #0f766e;
+}
+
+.form-status-banner.is-warning {
+  background: rgba(217, 119, 6, 0.06);
+  border-color: rgba(217, 119, 6, 0.25);
+  color: #b45309;
+}
+
+.form-status-banner.is-error {
+  background: rgba(200, 16, 46, 0.05);
+  border-color: rgba(200, 16, 46, 0.25);
+  color: #b91c1c;
+}
+
 .field-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
