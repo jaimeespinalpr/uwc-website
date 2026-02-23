@@ -782,6 +782,60 @@ img {
   font-size: 0.9rem;
 }
 
+.level-details {
+  margin-top: 8px;
+}
+
+.level-details summary {
+  list-style: none;
+}
+
+.level-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.level-details-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--navy-700);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.level-details-link::after {
+  content: "+";
+  display: inline-block;
+  font-family: "Teko", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.level-details[open] .level-details-link::after {
+  content: "-";
+}
+
+.level-details-copy {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.level-details-copy p {
+  margin: 0 0 10px;
+  color: var(--ink-700);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.level-details-copy p:last-child {
+  margin-bottom: 0;
+}
+
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
