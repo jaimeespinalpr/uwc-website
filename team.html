@@ -14,7 +14,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Teko:wght@500;600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=usa-red-4" />
+  <link rel="stylesheet" href="styles.css?v=usa-red-5" />
 </head>
 <body>
   <header class="site-header">
@@ -57,34 +57,54 @@
         </div>
       </div>
 
+      <p class="coach-hint">Tap a coach name to view bio and results.</p>
+
       <div class="coach-featured-grid">
         <article class="coach-card coach-card-featured">
           <img class="coach-photo" src="assets/jaime.JPG" alt="Coach Jaime Espinal" />
-          <p class="coach-role">Olympic Medalist | Puerto Rico</p>
-          <h3>Jaime Espinal</h3>
-          <p class="coach-bio">
-            Olympic-level freestyle wrestler and UWC coach bringing elite international competition
-            experience and high-performance training standards to the room.
-          </p>
-          <ul class="coach-results">
-            <li>2012 Olympic silver medalist for Puerto Rico (men's freestyle light-heavyweight).</li>
-            <li>2016 Olympian and Puerto Rico's opening and closing flag bearer in Rio.</li>
-            <li>Pan American Games bronze (2015) and Central American & Caribbean Games gold (2010).</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Olympic Medalist | Puerto Rico</span>
+                <span class="coach-name">Jaime Espinal</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                Olympic-level freestyle wrestler and UWC coach bringing elite international competition
+                experience and high-performance training standards to the room.
+              </p>
+              <ul class="coach-results">
+                <li>2012 Olympic silver medalist for Puerto Rico (men's freestyle light-heavyweight).</li>
+                <li>2016 Olympian and Puerto Rico's opening and closing flag bearer in Rio.</li>
+                <li>Pan American Games bronze (2015) and Central American & Caribbean Games gold (2010).</li>
+              </ul>
+            </div>
+          </details>
         </article>
         <article class="coach-card coach-card-featured">
           <img class="coach-photo" src="assets/jane.JPG" alt="Coach Alma Jane Valencia" />
-          <p class="coach-role">Olympian | Mexico</p>
-          <h3>Alma Jane Valencia</h3>
-          <p class="coach-bio">
-            Mexican Olympian, physician, and UWC coach. Alma Jane combines international freestyle
-            experience with a strong technical and athlete-development focus.
-          </p>
-          <ul class="coach-results">
-            <li>First Mexican woman to qualify for the Olympic Games in wrestling (Tokyo 2020).</li>
-            <li>Qualified at 57 kg with gold at the Pan-American Olympic Qualifier in Ottawa.</li>
-            <li>2015 Pan American Games silver medalist and 2014 CAC Games gold medalist.</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Olympian | Mexico</span>
+                <span class="coach-name">Alma Jane Valencia</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                Mexican Olympian, physician, and UWC coach. Alma Jane combines international freestyle
+                experience with a strong technical and athlete-development focus.
+              </p>
+              <ul class="coach-results">
+                <li>First Mexican woman to qualify for the Olympic Games in wrestling (Tokyo 2020).</li>
+                <li>Qualified at 57 kg with gold at the Pan-American Olympic Qualifier in Ottawa.</li>
+                <li>2015 Pan American Games silver medalist and 2014 CAC Games gold medalist.</li>
+              </ul>
+            </div>
+          </details>
         </article>
       </div>
 
@@ -92,62 +112,107 @@
 
       <div class="coach-grid">
         <article class="coach-card">
-          <p class="coach-role">Assistant Coach</p>
-          <h3>Gary Munch</h3>
-          <p class="coach-bio">
-            Delaware-area coach and UWC staff member who also appears on the Salesianum wrestling
-            coaching staff roster.
-          </p>
-          <ul class="coach-results">
-            <li>JerseyWrestling lists him as a Hightstown wrestler and a 1x New Jersey state medalist.</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Assistant Coach</span>
+                <span class="coach-name">Gary Munch</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                Delaware-area coach and UWC staff member who also appears on the Salesianum wrestling
+                coaching staff roster.
+              </p>
+              <ul class="coach-results">
+                <li>JerseyWrestling lists him as a Hightstown wrestler and a 1x New Jersey state medalist.</li>
+              </ul>
+            </div>
+          </details>
         </article>
         <article class="coach-card">
-          <p class="coach-role">Assistant Coach</p>
-          <h3>Chris "Critter" Witte</h3>
-          <p class="coach-bio">
-            Delaware-area wrestling coach listed publicly as "Critter Witte" (Tyrant Wrestling)
-            and "Chris Witte" on the Salesianum wrestling coaching staff.
-          </p>
-          <ul class="coach-results">
-            <li>USA Wrestling Beast of the East seed release (2006) listed Chris Witte (Hodgson) at 103 lbs.</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Assistant Coach</span>
+                <span class="coach-name">Chris "Critter" Witte</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                Delaware-area wrestling coach listed publicly as "Critter Witte" (Tyrant Wrestling)
+                and "Chris Witte" on the Salesianum wrestling coaching staff.
+              </p>
+              <ul class="coach-results">
+                <li>USA Wrestling Beast of the East seed release (2006) listed Chris Witte (Hodgson) at 103 lbs.</li>
+              </ul>
+            </div>
+          </details>
         </article>
         <article class="coach-card">
-          <p class="coach-role">Assistant Coach</p>
-          <h3>Sam Munch</h3>
-          <p class="coach-bio">
-            UWC coach and recent Delaware high-school competitor who helps bridge youth development
-            and competitive training habits.
-          </p>
-          <ul class="coach-results">
-            <li>Independent Conference champion at 150 lbs (Salesianum, 2023).</li>
-            <li>FloWrestling results list a 3rd-place finish at the 2023 DIAA Individual State Tournament (150 lbs).</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Assistant Coach</span>
+                <span class="coach-name">Sam Munch</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                UWC coach and recent Delaware high-school competitor who helps bridge youth development
+                and competitive training habits.
+              </p>
+              <ul class="coach-results">
+                <li>Independent Conference champion at 150 lbs (Salesianum, 2023).</li>
+                <li>FloWrestling results list a 3rd-place finish at the 2023 DIAA Individual State Tournament (150 lbs).</li>
+              </ul>
+            </div>
+          </details>
         </article>
         <article class="coach-card">
-          <p class="coach-role">Assistant Coach</p>
-          <h3>Zach Spence</h3>
-          <p class="coach-bio">
-            Former Salesianum standout and University of Maryland wrestler (125 lbs) bringing
-            college-level room experience to UWC athletes.
-          </p>
-          <ul class="coach-results">
-            <li>Maryland roster lists him as a 3x Delaware state champion and 4x conference champion.</li>
-            <li>2019 Delaware Wrestler of the Year and 2022-23 Academic All-Big Ten (Maryland).</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Assistant Coach</span>
+                <span class="coach-name">Zach Spence</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                Former Salesianum standout and University of Maryland wrestler (125 lbs) bringing
+                college-level room experience to UWC athletes.
+              </p>
+              <ul class="coach-results">
+                <li>Maryland roster lists him as a 3x Delaware state champion and 4x conference champion.</li>
+                <li>2019 Delaware Wrestler of the Year and 2022-23 Academic All-Big Ten (Maryland).</li>
+              </ul>
+            </div>
+          </details>
         </article>
         <article class="coach-card">
-          <p class="coach-role">Assistant Coach</p>
-          <h3>Chris Sizemore</h3>
-          <p class="coach-bio">
-            UWC coach supporting instruction, athlete development, and session coverage across the
-            spring program.
-          </p>
-          <ul class="coach-results">
-            <li>Publicly available wrestling competition records for this coach are limited online.</li>
-            <li>Full athletic background and coaching bio can be shared directly with families on request.</li>
-          </ul>
+          <details class="coach-details">
+            <summary class="coach-summary">
+              <span class="coach-summary-text">
+                <span class="coach-role">Assistant Coach</span>
+                <span class="coach-name">Chris Sizemore</span>
+              </span>
+              <span class="coach-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="coach-panel">
+              <p class="coach-bio">
+                UWC coach supporting instruction, athlete development, and session coverage across the
+                spring program.
+              </p>
+              <ul class="coach-results">
+                <li>Publicly available wrestling competition records for this coach are limited online.</li>
+                <li>Full athletic background and coaching bio can be shared directly with families on request.</li>
+              </ul>
+            </div>
+          </details>
         </article>
       </div>
     </section>
