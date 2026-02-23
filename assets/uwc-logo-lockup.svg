@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" role="img" aria-label="United Wrestling Club logo">
+  <defs>
+    <style>
+      .red { fill: #c8102e; stroke: #c8102e; }
+      .blue { fill: #1d4f93; stroke: #1d4f93; }
+      .outline { fill: none; stroke-width: 18; stroke-linejoin: miter; }
+      .line-red { fill: none; stroke: #c8102e; stroke-width: 18; stroke-linecap: square; stroke-linejoin: miter; }
+      .line-blue { fill: none; stroke: #1d4f93; stroke-width: 18; stroke-linecap: square; stroke-linejoin: miter; }
+      .unit {
+        font-family: Teko, "Arial Black", Impact, sans-serif;
+        font-weight: 700;
+        letter-spacing: 10px;
+      }
+      .club {
+        font-family: Teko, "Arial Black", Impact, sans-serif;
+        font-weight: 600;
+        letter-spacing: 8px;
+      }
+    </style>
+  </defs>
+
+  <!-- Mark -->
+  <g transform="translate(495 40) scale(2.2)">
+    <path class="red outline" d="M35 16h150v146l-75 44-75-44z" />
+    <path class="line-red" d="M60 40v95l28 16 28-16V40" />
+    <path class="line-blue" d="M117 40v78l75-43V40" />
+    <path class="line-blue" d="M152 40v58" />
+    <path class="line-blue" d="M187 40v35" />
+    <path class="line-blue" d="M95 165l80-46" />
+    <path class="line-blue" d="M95 165l34 19 45-26" />
+  </g>
+
+  <!-- Wordmark -->
+  <text x="700" y="650" text-anchor="middle" class="unit red" font-size="220">UNITED</text>
+  <text x="700" y="795" text-anchor="middle" class="club blue" font-size="120">WRESTLING CLUB</text>
+</svg>

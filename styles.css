@@ -1286,12 +1286,17 @@ body::before {
   width: 46px;
   height: 46px;
   border-radius: 4px;
-  background: linear-gradient(180deg, #0b2346, #07172e);
+  background: #ffffff;
   box-shadow: none;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: "Teko", sans-serif;
-  font-size: 1.7rem;
-  letter-spacing: 0.08em;
+  border: 1px solid rgba(8, 26, 52, 0.12);
+  padding: 4px;
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-copy strong {
@@ -1573,6 +1578,13 @@ body::before {
 .hero-lower-card {
   margin: 0 22px 22px;
   z-index: 1;
+}
+
+.uwc-lockup {
+  width: min(420px, 100%);
+  height: auto;
+  display: block;
+  margin: 2px 0 8px;
 }
 
 .hero-lower-card .stack-list {
@@ -2061,7 +2073,7 @@ textarea:focus-visible {
   .brand-mark {
     width: 42px;
     height: 42px;
-    font-size: 1.55rem;
+    padding: 3px;
   }
 
   .hero::after {

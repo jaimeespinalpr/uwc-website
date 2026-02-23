@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 250" role="img" aria-label="United Wrestling Club mark">
+  <defs>
+    <style>
+      .r { stroke: #c8102e; }
+      .b { stroke: #1d4f93; }
+      .s { fill: none; stroke-width: 14; stroke-linecap: square; stroke-linejoin: miter; }
+    </style>
+  </defs>
+
+  <!-- Shield outline -->
+  <path class="r s" d="M35 16h150v146l-75 44-75-44z" />
+
+  <!-- Left red U shape -->
+  <path class="r s" d="M60 40v95l28 16 28-16V40" />
+
+  <!-- Right blue verticals and angled shape -->
+  <path class="b s" d="M117 40v78l75-43V40" />
+  <path class="b s" d="M152 40v58" />
+  <path class="b s" d="M187 40v35" />
+  <path class="b s" d="M95 165l80-46" />
+  <path class="b s" d="M95 165l34 19 45-26" />
+</svg>
