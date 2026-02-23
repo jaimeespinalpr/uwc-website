@@ -5,11 +5,8 @@ on:
     branches:
       - main
     paths:
-      - "index.html"
-      - "program.html"
-      - "team.html"
-      - "contact.html"
-      - "styles.css"
+      - "*.html"
+      - "*.css"
       - "assets/**"
       - ".github/workflows/deploy-hostinger.yml"
   workflow_dispatch:
