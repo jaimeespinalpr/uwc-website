@@ -1652,6 +1652,19 @@ body::before {
   box-shadow: var(--shadow-lg);
 }
 
+.hero-photo-bg {
+  position: absolute;
+  inset: -14px;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(3, 9, 21, 0.44), rgba(3, 12, 28, 0.72)),
+    url("assets/unnamed.jpg") center 45% / cover no-repeat;
+  filter: blur(9px) saturate(0.9);
+  transform: scale(1.08);
+  opacity: 0.62;
+}
+
 .hero::before {
   inset: 0;
   width: auto;
@@ -1662,6 +1675,8 @@ body::before {
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 22px 22px;
   opacity: 0.45;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .hero::after {
@@ -1672,11 +1687,14 @@ body::before {
   background: linear-gradient(90deg, rgba(200, 16, 46, 0.98), rgba(239, 75, 97, 0.95));
   transform: rotate(-7deg);
   opacity: 1;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .hero-grid {
   gap: 18px;
   padding: 22px;
+  z-index: 2;
 }
 
 .hero-grid-single {
