@@ -84,7 +84,7 @@
               <div class="field-row">
                 <label>
                   Athlete Age
-                  <select name="athlete_age_group">
+                  <select id="age-group-select" name="athlete_age_group">
                     <option value="">Select age group</option>
                     <option value="5-10">Ages 5-10</option>
                     <option value="11-13">Ages 11-13</option>
@@ -93,13 +93,8 @@
                 </label>
                 <label>
                   Preferred Class Type
-                  <select name="class_interest">
-                    <option value="">Select class type</option>
-                    <option value="future-champions">Future Champions (5-10)</option>
-                    <option value="foundation">Foundation (11-13 Beginner)</option>
-                    <option value="development">Development (11-13 Intermediate)</option>
-                    <option value="advanced-11-13">Advanced (11-13 Advanced)</option>
-                    <option value="elite-competition-team">Elite Competition Team (14+)</option>
+                  <select id="class-interest-select" name="class_interest" disabled>
+                    <option value="">Select age group first</option>
                   </select>
                 </label>
               </div>
@@ -155,5 +150,59 @@
       </div>
     </footer>
   </main>
+  <script>
+    (function () {
+      var ageSelect = document.getElementById("age-group-select");
+      var classSelect = document.getElementById("class-interest-select");
+
+      if (!ageSelect || !classSelect) return;
+
+      var classOptionsByAge = {
+        "5-10": [
+          { value: "future-champions", label: "Future Champions (5-10)" }
+        ],
+        "11-13": [
+          { value: "foundation", label: "Foundation (11-13 Beginner)" },
+          { value: "development", label: "Development (11-13 Intermediate)" },
+          { value: "advanced-11-13", label: "Advanced (11-13 Advanced)" }
+        ],
+        "14-plus": [
+          { value: "elite-competition-team", label: "Elite Competition Team (14+)" }
+        ]
+      };
+
+      function resetClassSelect(placeholder) {
+        classSelect.innerHTML = "";
+        var option = document.createElement("option");
+        option.value = "";
+        option.textContent = placeholder;
+        classSelect.appendChild(option);
+      }
+
+      function updateClassOptions() {
+        var ageValue = ageSelect.value;
+        var options = classOptionsByAge[ageValue] || [];
+
+        if (!ageValue || options.length === 0) {
+          classSelect.disabled = true;
+          resetClassSelect("Select age group first");
+          return;
+        }
+
+        classSelect.disabled = false;
+        resetClassSelect("Select class type");
+
+        options.forEach(function (item) {
+          var option = document.createElement("option");
+          option.value = item.value;
+          option.textContent = item.label;
+          classSelect.appendChild(option);
+        });
+      }
+
+      ageSelect.addEventListener("change", updateClassOptions);
+      updateClassOptions();
+    })();
+  </script>
 </body>
 </html>
