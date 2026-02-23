@@ -261,9 +261,9 @@ img {
   background:
     radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.32) 46%, rgba(255,255,255,0.08) 72%),
     url("assets/Kids.png") center center / cover no-repeat;
-  filter: blur(16px) saturate(0.9);
+  filter: blur(8px) saturate(0.95);
   transform: scale(1.03);
-  opacity: 0.26;
+  opacity: 0.34;
 }
 
 .hero {
