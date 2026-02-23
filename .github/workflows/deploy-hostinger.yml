@@ -1,0 +1,88 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+      - "program.html"
+      - "team.html"
+      - "contact.html"
+      - "styles.css"
+      - "assets/**"
+      - ".github/workflows/deploy-hostinger.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build deploy bundle
+        run: |
+          mkdir -p dist
+          rsync -av \
+            --exclude 'dist/' \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude 'scripts/' \
+            --exclude '*.zip' \
+            --exclude 'README.md' \
+            --exclude '.DS_Store' \
+            ./ dist/
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
+      - name: Deploy via SFTP / FTP
+        env:
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_USERNAME: ${{ secrets.HOSTINGER_USERNAME }}
+          HOSTINGER_PASSWORD: ${{ secrets.HOSTINGER_PASSWORD }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_PROTOCOL: ${{ secrets.HOSTINGER_PROTOCOL }}
+          HOSTINGER_REMOTE_DIR: ${{ secrets.HOSTINGER_REMOTE_DIR }}
+        run: |
+          set -euo pipefail
+
+          : "${HOSTINGER_HOST:?Missing secret HOSTINGER_HOST}"
+          : "${HOSTINGER_USERNAME:?Missing secret HOSTINGER_USERNAME}"
+          : "${HOSTINGER_PASSWORD:?Missing secret HOSTINGER_PASSWORD}"
+
+          PROTOCOL="${HOSTINGER_PROTOCOL:-sftp}"
+          PORT="${HOSTINGER_PORT:-22}"
+          REMOTE_DIR="${HOSTINGER_REMOTE_DIR:-public_html}"
+
+          LFTP_SETTINGS="$(mktemp)"
+          {
+            echo "set cmd:fail-exit yes"
+            echo "set net:max-retries 2"
+            echo "set net:reconnect-interval-base 5"
+            echo "set sftp:auto-confirm yes"
+            echo "set ssl:verify-certificate no"
+
+            if [ "$PROTOCOL" = "ftps" ]; then
+              echo "set ftp:ssl-force yes"
+              echo "set ftp:ssl-protect-data yes"
+            fi
+          } > "$LFTP_SETTINGS"
+
+          echo "Deploying dist/ to ${PROTOCOL}://${HOSTINGER_HOST}:${PORT}/${REMOTE_DIR}"
+
+          lftp -u "${HOSTINGER_USERNAME},${HOSTINGER_PASSWORD}" "${PROTOCOL}://${HOSTINGER_HOST}:${PORT}" <<EOF
+          source $LFTP_SETTINGS
+          mkdir -p $REMOTE_DIR
+          mirror -R --verbose=2 --parallel=2 --only-newer dist/ $REMOTE_DIR
+          bye
+          EOF
+
+          rm -f "$LFTP_SETTINGS"
