@@ -842,11 +842,30 @@ img {
   gap: 12px;
 }
 
+.coach-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.coach-grid-label {
+  margin: 2px 0 10px;
+  color: var(--ink-500);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
 .coach-card {
   border-radius: 16px;
   border: 1px solid var(--line);
   background: var(--white);
   box-shadow: var(--shadow-sm);
+  padding: 14px;
+}
+
+.coach-card-featured {
   padding: 14px;
 }
 
@@ -862,6 +881,15 @@ img {
   background: #eef2f7;
 }
 
+.coach-role {
+  margin: 0 0 4px;
+  font-family: "Teko", sans-serif;
+  color: var(--navy-700);
+  font-size: 0.86rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .coach-card h3 {
   margin: 0;
   color: var(--navy-900);
@@ -869,9 +897,42 @@ img {
 }
 
 .coach-card p {
-  margin: 6px 0 0;
   color: var(--ink-500);
   font-size: 0.85rem;
+}
+
+.coach-bio {
+  margin: 8px 0 0;
+  color: var(--ink-700);
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.coach-results {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.coach-results li {
+  position: relative;
+  padding-left: 12px;
+  color: var(--ink-700);
+  font-size: 0.84rem;
+  line-height: 1.3;
+}
+
+.coach-results li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--orange-500);
 }
 
 .location-panel {
@@ -1119,6 +1180,10 @@ textarea:focus-visible {
   .coach-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .coach-featured-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 860px) {
@@ -1201,6 +1266,7 @@ textarea:focus-visible {
   .path-grid,
   .level-grid,
   .pricing-grid,
+  .coach-featured-grid,
   .coach-grid,
   .stat-grid {
     grid-template-columns: 1fr;
