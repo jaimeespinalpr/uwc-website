@@ -77,8 +77,7 @@ jobs:
 
           lftp -u "${HOSTINGER_USERNAME},${HOSTINGER_PASSWORD}" "${PROTOCOL}://${HOSTINGER_HOST}:${PORT}" <<EOF
           source $LFTP_SETTINGS
-          mkdir -p $REMOTE_DIR
-          mirror -R --verbose=2 --parallel=2 --only-newer dist/ $REMOTE_DIR
+          mirror -R --verbose=2 --parallel=1 --only-newer dist/ $REMOTE_DIR
           bye
           EOF
 
