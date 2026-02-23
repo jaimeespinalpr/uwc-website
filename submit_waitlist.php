@@ -194,6 +194,13 @@ function send_parent_confirmation(array $submission): bool
         '- Class Interest: ' . $submission['class_interest'],
         '',
         'Questions?',
+        ((defined('WAITLIST_CONTACT_NAME') && WAITLIST_CONTACT_NAME !== '')
+            ? 'Contact: ' . WAITLIST_CONTACT_NAME . (
+                (defined('WAITLIST_CONTACT_TITLE') && WAITLIST_CONTACT_TITLE !== '')
+                    ? ' (' . WAITLIST_CONTACT_TITLE . ')'
+                    : ''
+              )
+            : ''),
         'Contact us at: ' . WAITLIST_CONTACT_EMAIL,
         (WAITLIST_CONTACT_PHONE !== '' ? 'Phone / Text: ' . WAITLIST_CONTACT_PHONE : ''),
         '',
@@ -270,6 +277,8 @@ function build_parent_confirmation_html(array $submission): string
     $siteUrl = defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://united-wc.com';
     $logoUrl = defined('WAITLIST_LOGO_URL') ? WAITLIST_LOGO_URL : rtrim($siteUrl, '/') . '/assets/uwc-logo.png';
     $contactPhone = defined('WAITLIST_CONTACT_PHONE') ? trim((string) WAITLIST_CONTACT_PHONE) : '';
+    $contactName = defined('WAITLIST_CONTACT_NAME') ? trim((string) WAITLIST_CONTACT_NAME) : '';
+    $contactTitle = defined('WAITLIST_CONTACT_TITLE') ? trim((string) WAITLIST_CONTACT_TITLE) : '';
 
     $guardianName = e($submission['guardian_name']);
     $ageGroup = e($submission['athlete_age_group']);
@@ -277,6 +286,22 @@ function build_parent_confirmation_html(array $submission): string
     $contactEmail = e(WAITLIST_CONTACT_EMAIL);
     $logoUrlEsc = e($logoUrl);
     $siteUrlEsc = e($siteUrl);
+
+    $contactPersonRow = '';
+    if ($contactName !== '') {
+        $contactPersonLabel = $contactName;
+        if ($contactTitle !== '') {
+            $contactPersonLabel .= ' (' . $contactTitle . ')';
+        }
+        $contactPersonEsc = e($contactPersonLabel);
+        $contactPersonRow = <<<HTML
+          <tr>
+            <td style="padding:0 0 6px 0; color:#334155; font-size:14px; line-height:1.4;">
+              <strong style="color:#0f172a;">Contact:</strong> {$contactPersonEsc}
+            </td>
+          </tr>
+        HTML;
+    }
 
     $phoneRow = '';
     if ($contactPhone !== '') {
@@ -355,6 +380,7 @@ function build_parent_confirmation_html(array $submission): string
                   <tr>
                     <td style="padding:0 0 8px 0; color:#0f172a; font-size:15px; font-weight:700;">Questions?</td>
                   </tr>
+                  {$contactPersonRow}
                   <tr>
                     <td style="padding:0 0 6px 0; color:#334155; font-size:14px; line-height:1.4;">
                       <strong style="color:#0f172a;">Email:</strong> {$contactEmail}
