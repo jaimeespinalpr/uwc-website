@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registration Updates | United Wrestling Club</title>
+  <title>Register | United Wrestling Club</title>
   <meta
     name="description"
-    content="Join the United Wrestling Club Spring Session 2026 registration waitlist. Registration opens soon."
+    content="Build your family registration for United Wrestling Club Spring Session 2026. Estimate totals for multiple athletes and join the priority waitlist until enrollment opens."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +14,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Teko:wght@500;600;700&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=usa-red-14" />
+  <link rel="stylesheet" href="styles.css?v=usa-red-15" />
 </head>
 <body>
   <header class="site-header">
@@ -35,113 +35,190 @@
         <a class="nav-link" href="team.html">COACHES</a>
         <a class="nav-link is-active" href="contact.html" aria-current="page">REGISTER</a>
       </nav>
-
     </div>
   </header>
 
   <main class="container page-shell">
     <section class="page-hero" aria-labelledby="registration-title">
-      <span class="pill">Registration updates</span>
-      <h1 id="registration-title">Spots open soon for Spring Session 2026</h1>
+      <span class="pill">Pre-registration</span>
+      <h1 id="registration-title">Family registration builder and payment preview</h1>
       <p>
-        Registration is not open yet. Join the waitlist to receive the enrollment link and program updates
-        when spots become available. The season begins on <strong>March 9, 2026</strong> and ends on
-        <strong>May 28, 2026</strong>.
+        Build your family registration now and review the estimated total before enrollment opens. Checkout is not
+        active yet, so this page will save your information and add your family to the <strong>priority waitlist</strong>
+        in one click.
       </p>
+      <div class="badge-line">
+        <span class="badge-soft">Full payment structure</span>
+        <span class="badge-soft">2nd athlete 50% off</span>
+        <span class="badge-soft">3rd+ athlete 25% off</span>
+      </div>
     </section>
 
-    <section class="section" id="waitlist" aria-labelledby="waitlist-title">
+    <section class="section" id="register" aria-labelledby="register-title">
       <div class="section-head">
         <div>
-          <p class="section-kicker">Waitlist</p>
-          <h2 class="section-title" id="waitlist-title">Collect interest before enrollment opens</h2>
+          <p class="section-kicker">Register</p>
+          <h2 class="section-title" id="register-title">Prepare your family registration now</h2>
         </div>
         <p class="section-note">
-          Families on this list can be contacted as soon as registration opens.
+          We will collect your details, estimate your total, and place your family on the priority waitlist until enrollment opens.
         </p>
       </div>
 
-      <div class="form-shell">
-        <div class="form-card">
-          <h3>Join the priority list</h3>
+      <form id="family-registration-form" class="form-shell" action="submit_registration_interest.php" method="post" novalidate>
+        <section class="form-card" aria-labelledby="family-form-title">
+          <h3 id="family-form-title">Parent / Guardian Information</h3>
           <p>
-            Families who join here can be notified as soon as registration opens for Spring Session 2026.
+            Enter your information and add each athlete below. Class options are filtered by age group automatically.
           </p>
 
-          <form action="submit_waitlist.php" method="post">
-            <div class="form-grid">
-              <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot-field" aria-hidden="true" />
+          <div class="form-grid">
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot-field" aria-hidden="true" />
+            <input type="hidden" name="submission_source" value="registration-prep" />
+            <input type="hidden" name="athlete_count" id="athlete-count-input" value="1" />
+            <input type="hidden" name="estimated_subtotal" id="estimated-subtotal-input" value="0" />
+            <input type="hidden" name="estimated_discount_total" id="estimated-discount-input" value="0" />
+            <input type="hidden" name="estimated_total" id="estimated-total-input" value="0" />
+            <input type="hidden" name="pricing_snapshot_json" id="pricing-snapshot-input" value="" />
 
-              <div class="field-row">
-                <label>
-                  Parent / Guardian Name
-                  <input type="text" name="guardian_name" placeholder="Enter full name" required />
-                </label>
-                <label>
-                  Email Address
-                  <input type="email" name="email" placeholder="name@example.com" required />
-                </label>
-              </div>
-
-              <div class="field-row">
-                <label>
-                  Athlete Age
-                  <select id="age-group-select" name="athlete_age_group" required>
-                    <option value="">Select age group</option>
-                    <option value="5-10">Ages 5-10</option>
-                    <option value="11-13">Ages 11-13</option>
-                    <option value="14-plus">Ages 14+</option>
-                  </select>
-                </label>
-                <label>
-                  Preferred Class Type
-                  <select id="class-interest-select" name="class_interest" disabled required>
-                    <option value="">Select age group first</option>
-                  </select>
-                </label>
-              </div>
-
+            <div class="field-row">
               <label>
-                Notes (optional)
-                <textarea name="notes" placeholder="Questions, experience level, scheduling notes, etc."></textarea>
+                Parent / Guardian Name
+                <input type="text" name="guardian_name" placeholder="Enter full name" required />
+              </label>
+              <label>
+                Email Address
+                <input type="email" name="email" placeholder="name@example.com" required />
               </label>
             </div>
 
-            <div class="form-actions">
-              <button type="submit" class="btn btn-md btn-primary">Join Waitlist</button>
+            <div class="field-row">
+              <label>
+                Phone Number
+                <input type="tel" name="phone" placeholder="(302) 555-1234" />
+              </label>
+              <label>
+                Preferred Contact Method
+                <select name="preferred_contact_method">
+                  <option value="">Select one (optional)</option>
+                  <option value="email">Email</option>
+                  <option value="phone">Phone Call</option>
+                  <option value="text">Text Message</option>
+                </select>
+              </label>
             </div>
-
-            <p class="micro">
-              You will receive a confirmation email after joining the waitlist.
-            </p>
-          </form>
-        </div>
-
-        <aside class="info-card" aria-label="Registration summary">
-          <h3>Registration Status</h3>
-          <p>
-            Spring Session 2026 registration opens soon. Join the waitlist now to receive the enrollment link first.
-          </p>
-
-          <div class="badge-line">
-            <span class="badge-soft">Registration opens soon</span>
           </div>
 
           <div class="divider"></div>
 
-          <h3>What happens next</h3>
-          <p>
-            Families on the waitlist can be contacted first, followed by a public registration announcement.
+          <div class="section-mini-head">
+            <div>
+              <h3>Athletes</h3>
+              <p>Add one or more athletes in this family registration.</p>
+            </div>
+            <button type="button" class="btn btn-sm btn-secondary btn-inline" id="add-athlete-btn">+ Add athlete</button>
+          </div>
+
+          <div id="athlete-list" class="athlete-list" aria-live="polite"></div>
+
+          <p class="micro">
+            Coach placement determines final class fit. The selections here help us prepare your registration and communication.
           </p>
 
+          <div class="divider"></div>
+
+          <label>
+            Family Notes (optional)
+            <textarea name="notes" placeholder="Questions, schedule notes, previous experience, or anything we should know."></textarea>
+          </label>
+
+          <div class="checkbox-stack" role="group" aria-label="Required confirmations">
+            <label class="checkbox-row">
+              <input type="checkbox" name="confirm_enrollment_closed" value="yes" required />
+              <span>I understand enrollment and payment checkout are not open yet. Submitting this form adds my family to the priority waitlist.</span>
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" name="confirm_info_accurate" value="yes" required />
+              <span>I confirm the information provided is accurate to the best of my knowledge.</span>
+            </label>
+          </div>
+        </section>
+
+        <aside class="info-card prereg-sidebar" aria-label="Payment preview and next step">
+          <div class="payment-preview-card">
+            <h3>Payment Step</h3>
+            <p>
+              Enrollment is not open yet. We are collecting family registration details now so we can notify you first and send the checkout link when enrollment opens.
+            </p>
+            <div class="payment-lock-banner">
+              Checkout is currently locked until enrollment opens.
+            </div>
+            <button type="button" class="btn btn-md btn-secondary is-disabled-btn" disabled aria-disabled="true">
+              Payment Checkout (opens later)
+            </button>
+            <button type="submit" class="btn btn-md btn-primary" id="join-priority-btn">
+              Save Family Info + Join Priority Waitlist
+            </button>
+            <p class="micro">
+              One click saves your family registration details and sends a confirmation email.
+            </p>
+          </div>
+
+          <div class="estimate-card" aria-live="polite">
+            <h3>Estimated Total</h3>
+            <p>
+              Session fee is <strong>$285 per athlete</strong>. Discounts are applied automatically based on the number of athletes in this registration.
+            </p>
+
+            <div class="estimate-breakdown" id="estimate-breakdown"></div>
+
+            <div class="estimate-totals">
+              <div class="estimate-line">
+                <span>Base subtotal</span>
+                <strong id="estimate-subtotal">$0.00</strong>
+              </div>
+              <div class="estimate-line estimate-line-discount">
+                <span>Discounts</span>
+                <strong id="estimate-discount">-$0.00</strong>
+              </div>
+              <div class="estimate-line estimate-line-total">
+                <span>Estimated total</span>
+                <strong id="estimate-total">$0.00</strong>
+              </div>
+            </div>
+
+            <p class="micro">
+              Tax is not calculated here. If applicable, tax will be calculated during checkout when enrollment opens.
+            </p>
+          </div>
+
+          <div class="info-card-subsection">
+            <h3>Discount Rules</h3>
+            <ul class="check-list compact-check-list">
+              <li>1st athlete: full price ($285)</li>
+              <li>2nd athlete: 50% off</li>
+              <li>3rd athlete and up: 25% off</li>
+              <li>Payment type: full payment at checkout (when enrollment opens)</li>
+            </ul>
+          </div>
+
+          <div class="info-card-subsection">
+            <h3>What you receive now</h3>
+            <ul class="check-list compact-check-list">
+              <li>Priority waitlist placement</li>
+              <li>Email confirmation with your registration summary</li>
+              <li>Estimated total for your family</li>
+              <li>Enrollment/payment link when registration opens</li>
+            </ul>
+          </div>
         </aside>
-      </div>
+      </form>
     </section>
 
     <footer class="site-footer">
       <div class="footer-grid">
         <div class="footer-copy">
-          United Wrestling Club | Registration Updates | Spring Session 2026
+          United Wrestling Club | Registration Prep & Waitlist | Spring Session 2026
         </div>
         <div class="footer-links" aria-label="Footer links">
           <a href="index.html">HOME</a>
@@ -151,37 +228,16 @@
       </div>
     </footer>
   </main>
+
   <script>
     (function () {
-      var formCard = document.querySelector(".form-card");
-      var urlParams = new URLSearchParams(window.location.search);
-      var status = urlParams.get("status");
-      var msg = urlParams.get("msg");
-
-      if (formCard && status) {
-        var notice = document.createElement("div");
-        notice.className = "form-status-banner";
-
-        if (status === "success") {
-          notice.classList.add("is-success");
-          notice.innerHTML = "<strong>Thank you.</strong> You have been added to the waitlist. Please check your email for confirmation.";
-        } else if (status === "partial") {
-          notice.classList.add("is-warning");
-          notice.innerHTML = "<strong>Submitted.</strong> Your waitlist request was received, but the email confirmation could not be sent.";
-        } else {
-          notice.classList.add("is-error");
-          notice.innerHTML = "<strong>We could not submit the form.</strong> " + (msg || "Please try again.");
-        }
-
-        formCard.insertBefore(notice, formCard.children[2] || null);
-      }
-
-      var ageSelect = document.getElementById("age-group-select");
-      var classSelect = document.getElementById("class-interest-select");
-
-      if (!ageSelect || !classSelect) return;
-
-      var classOptionsByAge = {
+      var BASE_PRICE = 285;
+      var AGE_LABELS = {
+        "5-10": "Ages 5-10",
+        "11-13": "Ages 11-13",
+        "14-plus": "Ages 14+"
+      };
+      var CLASS_OPTIONS_BY_AGE = {
         "5-10": [
           { value: "future-champions", label: "Future Champions (5-10)" }
         ],
@@ -194,38 +250,336 @@
           { value: "elite-competition-team", label: "Elite Competition Team (14+)" }
         ]
       };
+      var EXPERIENCE_OPTIONS = [
+        { value: "", label: "Select level (optional)" },
+        { value: "new", label: "New to wrestling" },
+        { value: "developing", label: "Some experience" },
+        { value: "experienced", label: "Experienced" },
+        { value: "competition", label: "Competition-focused" }
+      ];
 
-      function resetClassSelect(placeholder) {
-        classSelect.innerHTML = "";
-        var option = document.createElement("option");
-        option.value = "";
-        option.textContent = placeholder;
-        classSelect.appendChild(option);
+      var form = document.getElementById("family-registration-form");
+      var formCard = document.querySelector(".form-card");
+      var athleteList = document.getElementById("athlete-list");
+      var addAthleteBtn = document.getElementById("add-athlete-btn");
+      var joinPriorityBtn = document.getElementById("join-priority-btn");
+      if (!form || !athleteList) return;
+
+      insertStatusBanner();
+
+      addAthleteCard();
+      syncAthleteCards();
+      syncEstimate();
+
+      addAthleteBtn.addEventListener("click", function () {
+        addAthleteCard();
+        syncAthleteCards();
+        syncEstimate();
+      });
+
+      athleteList.addEventListener("click", function (event) {
+        var button = event.target.closest("[data-remove-athlete]");
+        if (!button) return;
+
+        var cards = athleteList.querySelectorAll(".athlete-card");
+        if (cards.length <= 1) return;
+
+        var card = button.closest(".athlete-card");
+        if (card) {
+          card.remove();
+          syncAthleteCards();
+          syncEstimate();
+        }
+      });
+
+      athleteList.addEventListener("change", function (event) {
+        var target = event.target;
+        if (target && target.matches("[data-athlete-age-group]")) {
+          var card = target.closest(".athlete-card");
+          updateClassOptions(card, true);
+        }
+        syncEstimate();
+      });
+
+      athleteList.addEventListener("input", function () {
+        syncEstimate();
+      });
+
+      form.addEventListener("submit", function () {
+        syncEstimate();
+        if (joinPriorityBtn) {
+          joinPriorityBtn.disabled = true;
+          joinPriorityBtn.textContent = "Submitting...";
+        }
+      });
+
+      function insertStatusBanner() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var status = urlParams.get("status");
+        var msg = urlParams.get("msg");
+        if (!formCard || !status) return;
+
+        var notice = document.createElement("div");
+        notice.className = "form-status-banner";
+
+        if (status === "success") {
+          notice.classList.add("is-success");
+          notice.innerHTML = "<strong>Thank you.</strong> Your family pre-registration was saved and added to the priority waitlist. Please check your email for confirmation.";
+        } else if (status === "partial") {
+          notice.classList.add("is-warning");
+          notice.innerHTML = "<strong>Submitted.</strong> Your family pre-registration was saved, but the confirmation email could not be sent.";
+        } else {
+          notice.classList.add("is-error");
+          notice.innerHTML = "<strong>We could not submit the form.</strong> " + (msg || "Please try again.");
+        }
+
+        var insertBeforeNode = formCard.querySelector(".form-grid");
+        if (insertBeforeNode) {
+          formCard.insertBefore(notice, insertBeforeNode);
+        } else {
+          formCard.appendChild(notice);
+        }
       }
 
-      function updateClassOptions() {
+      function addAthleteCard() {
+        var card = document.createElement("section");
+        card.className = "athlete-card";
+        card.innerHTML = [
+          '<div class="athlete-card-head">',
+          '  <div>',
+          '    <div class="athlete-card-title">Athlete</div>',
+          '    <div class="athlete-card-price"></div>',
+          '  </div>',
+          '  <button type="button" class="btn btn-sm btn-ghost btn-inline athlete-remove-btn" data-remove-athlete>Remove</button>',
+          '</div>',
+          '<div class="athlete-card-body">',
+          '  <div class="field-row athlete-field-row">',
+          '    <label> Athlete Name <input type="text" name="athlete_name[]" placeholder="Athlete full name" required /> </label>',
+          '    <label> Athlete Age Group <select name="athlete_age_group[]" data-athlete-age-group required>',
+          '      <option value="">Select age group</option>',
+          '      <option value="5-10">Ages 5-10</option>',
+          '      <option value="11-13">Ages 11-13</option>',
+          '      <option value="14-plus">Ages 14+</option>',
+          '    </select> </label>',
+          '  </div>',
+          '  <div class="field-row athlete-field-row">',
+          '    <label> Class Type <select name="class_interest[]" data-athlete-class disabled required>',
+          '      <option value="">Select age group first</option>',
+          '    </select> </label>',
+          '    <label> Experience Level <select name="athlete_experience[]" data-athlete-experience></select> </label>',
+          '  </div>',
+          '</div>'
+        ].join("");
+
+        var experienceSelect = card.querySelector("[data-athlete-experience]");
+        EXPERIENCE_OPTIONS.forEach(function (item) {
+          var option = document.createElement("option");
+          option.value = item.value;
+          option.textContent = item.label;
+          experienceSelect.appendChild(option);
+        });
+
+        athleteList.appendChild(card);
+      }
+
+      function syncAthleteCards() {
+        var cards = athleteList.querySelectorAll(".athlete-card");
+        cards.forEach(function (card, index) {
+          var position = index + 1;
+          var title = card.querySelector(".athlete-card-title");
+          var price = card.querySelector(".athlete-card-price");
+          var removeBtn = card.querySelector("[data-remove-athlete]");
+          var pricing = getPricingForPosition(position);
+
+          if (title) {
+            title.textContent = "Athlete " + position;
+          }
+          if (price) {
+            price.textContent = pricing.label;
+          }
+          if (removeBtn) {
+            removeBtn.disabled = cards.length === 1;
+          }
+        });
+
+        var athleteCountInput = document.getElementById("athlete-count-input");
+        if (athleteCountInput) {
+          athleteCountInput.value = String(cards.length);
+        }
+      }
+
+      function getPricingForPosition(position) {
+        var discountRate = 0;
+        if (position === 2) {
+          discountRate = 0.5;
+        } else if (position >= 3) {
+          discountRate = 0.25;
+        }
+
+        var discountAmount = BASE_PRICE * discountRate;
+        var total = BASE_PRICE - discountAmount;
+        var label;
+        if (position === 1) {
+          label = "Full price · " + formatCurrency(total);
+        } else if (position === 2) {
+          label = "50% off · " + formatCurrency(total);
+        } else {
+          label = "25% off · " + formatCurrency(total);
+        }
+
+        return {
+          base: BASE_PRICE,
+          discountRate: discountRate,
+          discountAmount: discountAmount,
+          total: total,
+          label: label
+        };
+      }
+
+      function updateClassOptions(card, preserveValue) {
+        if (!card) return;
+        var ageSelect = card.querySelector("[data-athlete-age-group]");
+        var classSelect = card.querySelector("[data-athlete-class]");
+        if (!ageSelect || !classSelect) return;
+
+        var previousValue = preserveValue ? classSelect.value : "";
         var ageValue = ageSelect.value;
-        var options = classOptionsByAge[ageValue] || [];
+        var options = CLASS_OPTIONS_BY_AGE[ageValue] || [];
+
+        classSelect.innerHTML = "";
 
         if (!ageValue || options.length === 0) {
           classSelect.disabled = true;
-          resetClassSelect("Select age group first");
+          appendOption(classSelect, "", "Select age group first");
           return;
         }
 
         classSelect.disabled = false;
-        resetClassSelect("Select class type");
+
+        if (options.length > 1) {
+          appendOption(classSelect, "", "Select class type");
+        }
 
         options.forEach(function (item) {
-          var option = document.createElement("option");
-          option.value = item.value;
-          option.textContent = item.label;
-          classSelect.appendChild(option);
+          appendOption(classSelect, item.value, item.label);
         });
+
+        if (previousValue && options.some(function (item) { return item.value === previousValue; })) {
+          classSelect.value = previousValue;
+        } else if (options.length === 1) {
+          classSelect.value = options[0].value;
+        } else {
+          classSelect.value = "";
+        }
       }
 
-      ageSelect.addEventListener("change", updateClassOptions);
-      updateClassOptions();
+      function appendOption(select, value, label) {
+        var option = document.createElement("option");
+        option.value = value;
+        option.textContent = label;
+        select.appendChild(option);
+      }
+
+      function syncEstimate() {
+        var cards = Array.prototype.slice.call(athleteList.querySelectorAll(".athlete-card"));
+        var breakdownContainer = document.getElementById("estimate-breakdown");
+        var subtotalEl = document.getElementById("estimate-subtotal");
+        var discountEl = document.getElementById("estimate-discount");
+        var totalEl = document.getElementById("estimate-total");
+
+        var subtotal = 0;
+        var totalDiscount = 0;
+        var finalTotal = 0;
+        var pricingSnapshot = [];
+
+        if (breakdownContainer) {
+          breakdownContainer.innerHTML = "";
+        }
+
+        cards.forEach(function (card, index) {
+          var position = index + 1;
+          var pricing = getPricingForPosition(position);
+          var athleteNameInput = card.querySelector('input[name="athlete_name[]"]');
+          var ageSelect = card.querySelector("[data-athlete-age-group]");
+          var classSelect = card.querySelector("[data-athlete-class]");
+
+          subtotal += pricing.base;
+          totalDiscount += pricing.discountAmount;
+          finalTotal += pricing.total;
+
+          var athleteName = athleteNameInput && athleteNameInput.value.trim() ? athleteNameInput.value.trim() : "Athlete " + position;
+          var ageLabel = ageSelect && ageSelect.value ? (AGE_LABELS[ageSelect.value] || ageSelect.value) : "Age group pending";
+          var classLabel = classSelect && classSelect.value ? classSelect.options[classSelect.selectedIndex].text : "Class pending";
+
+          pricingSnapshot.push({
+            athlete_index: position,
+            athlete_name: athleteName,
+            age_group: ageLabel,
+            class_type: classLabel,
+            base_price: roundMoney(pricing.base),
+            discount_rate: pricing.discountRate,
+            discount_amount: roundMoney(pricing.discountAmount),
+            line_total: roundMoney(pricing.total)
+          });
+
+          if (breakdownContainer) {
+            var row = document.createElement("div");
+            row.className = "estimate-breakdown-row";
+
+            var left = document.createElement("div");
+            left.className = "estimate-breakdown-copy";
+            left.innerHTML = "<strong>" + escapeHtml(athleteName) + "</strong><span>" + escapeHtml(ageLabel) + " · " + escapeHtml(classLabel) + "</span>";
+
+            var right = document.createElement("div");
+            right.className = "estimate-breakdown-price";
+            right.innerHTML = pricing.discountAmount > 0
+              ? "<strong>" + formatCurrency(pricing.total) + "</strong><span>-" + formatCurrency(pricing.discountAmount) + "</span>"
+              : "<strong>" + formatCurrency(pricing.total) + "</strong>";
+
+            row.appendChild(left);
+            row.appendChild(right);
+            breakdownContainer.appendChild(row);
+          }
+        });
+
+        if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);
+        if (discountEl) discountEl.textContent = "-" + formatCurrency(totalDiscount);
+        if (totalEl) totalEl.textContent = formatCurrency(finalTotal);
+
+        var subtotalInput = document.getElementById("estimated-subtotal-input");
+        var discountInput = document.getElementById("estimated-discount-input");
+        var totalInput = document.getElementById("estimated-total-input");
+        var snapshotInput = document.getElementById("pricing-snapshot-input");
+        var countInput = document.getElementById("athlete-count-input");
+
+        if (subtotalInput) subtotalInput.value = roundMoney(subtotal).toFixed(2);
+        if (discountInput) discountInput.value = roundMoney(totalDiscount).toFixed(2);
+        if (totalInput) totalInput.value = roundMoney(finalTotal).toFixed(2);
+        if (snapshotInput) snapshotInput.value = JSON.stringify(pricingSnapshot);
+        if (countInput) countInput.value = String(cards.length);
+      }
+
+      function roundMoney(value) {
+        return Math.round(value * 100) / 100;
+      }
+
+      function formatCurrency(value) {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(value || 0);
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
     })();
   </script>
 </body>
