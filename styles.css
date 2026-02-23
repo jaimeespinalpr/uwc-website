@@ -247,23 +247,24 @@ img {
   padding: 22px 0 44px;
 }
 
-.home-page-shell > * {
+.page-shell > * {
   position: relative;
   z-index: 1;
 }
 
-.home-page-bg {
+.page-shell::before {
+  content: "";
   position: absolute;
-  inset: 84px -56px 8px -56px;
+  inset: 8px 0 8px 0;
   z-index: 0;
   pointer-events: none;
   border-radius: 20px;
   background:
-    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.32) 46%, rgba(255,255,255,0.08) 72%),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.38) 44%, rgba(255,255,255,0.10) 72%),
     url("assets/Kids.png") center center / cover no-repeat;
   filter: blur(8px) saturate(0.95);
   transform: scale(1.03);
-  opacity: 0.34;
+  opacity: 0.24;
 }
 
 .hero {
