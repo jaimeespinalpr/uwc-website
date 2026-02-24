@@ -2402,3 +2402,327 @@ textarea:focus-visible {
     justify-content: center;
   }
 }
+
+/* Registration builder (pre-enrollment + payment preview) */
+.section-mini-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 2px 0 12px;
+}
+
+.section-mini-head h3 {
+  margin: 0;
+  color: var(--navy-900);
+  font-size: 1.02rem;
+}
+
+.section-mini-head p {
+  margin: 6px 0 0;
+  color: var(--ink-700);
+  font-size: 0.88rem;
+}
+
+.btn-inline {
+  width: auto;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.athlete-list {
+  display: grid;
+  gap: 10px;
+}
+
+.athlete-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(8, 26, 52, 0.03), transparent 42%),
+    linear-gradient(180deg, #ffffff, #fbfdff);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.athlete-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.athlete-card-title {
+  color: var(--navy-900);
+  font-weight: 800;
+  font-size: 0.98rem;
+  line-height: 1.1;
+}
+
+.athlete-card-price {
+  margin-top: 2px;
+  color: var(--ink-500);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.athlete-remove-btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.athlete-card-body {
+  display: grid;
+  gap: 10px;
+}
+
+.athlete-field-row {
+  margin: 0;
+}
+
+.checkbox-stack {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.checkbox-row {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: start;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbfdff;
+  padding: 10px 12px;
+  color: var(--ink-700);
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0;
+  padding: 0;
+  border-radius: 4px;
+}
+
+.checkbox-row span {
+  min-width: 0;
+}
+
+.prereg-sidebar {
+  align-self: start;
+  position: sticky;
+  top: 86px;
+  display: grid;
+  gap: 12px;
+}
+
+.payment-preview-card,
+.estimate-card,
+.info-card-subsection {
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+  padding: 14px;
+}
+
+.payment-preview-card {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(200, 16, 46, 0.06), transparent 45%),
+    linear-gradient(180deg, #ffffff, #fff9fb);
+}
+
+.payment-preview-card h3,
+.estimate-card h3,
+.info-card-subsection h3 {
+  margin: 0;
+  color: var(--navy-900);
+  font-size: 1rem;
+}
+
+.payment-preview-card p,
+.estimate-card p,
+.info-card-subsection p {
+  margin: 8px 0 0;
+  color: var(--ink-700);
+  font-size: 0.88rem;
+}
+
+.payment-lock-banner {
+  margin-top: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(200, 16, 46, 0.2);
+  background: rgba(200, 16, 46, 0.05);
+  color: #991b1b;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.3;
+  padding: 10px 11px;
+}
+
+.is-disabled-btn[disabled] {
+  opacity: 0.72;
+  cursor: not-allowed;
+  filter: saturate(0.7);
+}
+
+.payment-preview-card .btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.payment-preview-card .btn:first-of-type {
+  margin-top: 12px;
+}
+
+.estimate-breakdown {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.estimate-breakdown-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: #fbfdff;
+  padding: 10px 11px;
+}
+
+.estimate-breakdown-copy {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.estimate-breakdown-copy strong {
+  color: var(--navy-900);
+  font-size: 0.84rem;
+  line-height: 1.15;
+}
+
+.estimate-breakdown-copy span {
+  color: var(--ink-500);
+  font-size: 0.74rem;
+  line-height: 1.25;
+}
+
+.estimate-breakdown-price {
+  text-align: right;
+  display: grid;
+  gap: 2px;
+  justify-items: end;
+}
+
+.estimate-breakdown-price strong {
+  color: var(--navy-900);
+  font-size: 0.84rem;
+  line-height: 1;
+}
+
+.estimate-breakdown-price span {
+  color: #b91c1c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.estimate-totals {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 6px;
+}
+
+.estimate-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--ink-700);
+  font-size: 0.84rem;
+}
+
+.estimate-line strong {
+  color: var(--navy-900);
+  font-size: 0.88rem;
+}
+
+.estimate-line-discount strong {
+  color: #b91c1c;
+}
+
+.estimate-line-total {
+  padding-top: 4px;
+  border-top: 1px dashed rgba(8, 26, 52, 0.15);
+}
+
+.estimate-line-total span,
+.estimate-line-total strong {
+  color: var(--navy-900);
+  font-weight: 800;
+}
+
+.estimate-line-total strong {
+  color: var(--orange-500);
+  font-size: 1rem;
+}
+
+.compact-check-list {
+  margin-top: 8px;
+  gap: 6px;
+}
+
+.compact-check-list li {
+  font-size: 0.84rem;
+}
+
+.compact-check-list li::before {
+  top: 0.38rem;
+}
+
+@media (max-width: 1040px) {
+  .prereg-sidebar {
+    position: static;
+    top: auto;
+  }
+}
+
+@media (max-width: 860px) {
+  .section-mini-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-mini-head .btn-inline {
+    width: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .athlete-card-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .athlete-card-head .btn-inline,
+  .athlete-card-head .btn {
+    width: 100%;
+  }
+
+  .checkbox-row {
+    grid-template-columns: 16px 1fr;
+    padding: 10px;
+  }
+}
