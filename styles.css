@@ -2726,3 +2726,231 @@ textarea:focus-visible {
     padding: 10px;
   }
 }
+
+/* Readability spacing refinements (global + registration-heavy page) */
+body {
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.page-hero p,
+.section p,
+.coach-bio,
+.level-details-copy p,
+.location-box p,
+.form-card p,
+.info-card p,
+.micro,
+.footer-copy,
+label,
+.check-list li,
+.faq-list span {
+  letter-spacing: 0.012em;
+}
+
+.site-nav .nav-link,
+.footer-links a,
+.pill,
+.badge-soft {
+  letter-spacing: 0.1em;
+}
+
+.register-page .page-hero {
+  padding: 22px;
+}
+
+.register-page .page-hero p {
+  margin-top: 12px;
+  line-height: 1.65;
+  max-width: 72ch;
+}
+
+.register-page .section {
+  padding: 22px;
+}
+
+.register-page .section-head {
+  margin-bottom: 8px;
+}
+
+.register-page .section-note {
+  line-height: 1.55;
+  letter-spacing: 0.012em;
+}
+
+.register-page .form-shell {
+  gap: 18px;
+}
+
+.register-page .form-card,
+.register-page .info-card {
+  padding: 18px;
+  border-radius: 20px;
+}
+
+.register-page .form-card h3,
+.register-page .info-card h3,
+.register-page .section-mini-head h3 {
+  letter-spacing: 0.015em;
+}
+
+.register-page .form-card p,
+.register-page .payment-preview-card p,
+.register-page .estimate-card p,
+.register-page .info-card-subsection p {
+  margin-top: 10px;
+  line-height: 1.65;
+  letter-spacing: 0.014em;
+}
+
+.register-page .form-grid {
+  margin-top: 18px;
+  gap: 14px;
+}
+
+.register-page .field-row {
+  gap: 14px;
+}
+
+.register-page label {
+  gap: 7px;
+  font-size: 0.86rem;
+  letter-spacing: 0.014em;
+}
+
+.register-page input,
+.register-page select,
+.register-page textarea {
+  padding: 12px 13px;
+}
+
+.register-page textarea {
+  min-height: 130px;
+  line-height: 1.55;
+}
+
+.register-page .divider {
+  margin: 18px 0;
+}
+
+.register-page .section-mini-head {
+  margin: 4px 0 14px;
+}
+
+.register-page .athlete-list {
+  gap: 14px;
+}
+
+.register-page .athlete-card {
+  padding: 14px;
+}
+
+.register-page .athlete-card-head {
+  margin-bottom: 12px;
+}
+
+.register-page .athlete-card-body {
+  gap: 12px;
+}
+
+.register-page .athlete-card-price {
+  letter-spacing: 0.035em;
+}
+
+.register-page .checkbox-stack {
+  margin-top: 14px;
+  gap: 12px;
+}
+
+.register-page .checkbox-row {
+  padding: 12px 13px;
+  line-height: 1.45;
+  letter-spacing: 0.012em;
+}
+
+.register-page .prereg-sidebar {
+  gap: 14px;
+  top: 92px;
+}
+
+.register-page .payment-preview-card,
+.register-page .estimate-card,
+.register-page .info-card-subsection {
+  padding: 16px;
+}
+
+.register-page .payment-lock-banner {
+  margin-top: 12px;
+  padding: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.012em;
+}
+
+.register-page .payment-preview-card .btn {
+  margin-top: 12px;
+}
+
+.register-page .estimate-breakdown {
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.register-page .estimate-breakdown-row {
+  padding: 12px;
+}
+
+.register-page .estimate-breakdown-copy {
+  gap: 4px;
+}
+
+.register-page .estimate-breakdown-copy span {
+  line-height: 1.35;
+  letter-spacing: 0.012em;
+}
+
+.register-page .estimate-totals {
+  margin-top: 12px;
+  padding-top: 12px;
+  gap: 8px;
+}
+
+.register-page .compact-check-list {
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.register-page .compact-check-list li {
+  line-height: 1.45;
+  letter-spacing: 0.012em;
+}
+
+.register-page .site-footer {
+  margin-top: 24px;
+}
+
+@media (max-width: 860px) {
+  .register-page .form-shell {
+    gap: 14px;
+  }
+}
+
+@media (max-width: 620px) {
+  .register-page .page-hero,
+  .register-page .section,
+  .register-page .site-footer {
+    padding: 16px;
+  }
+
+  .register-page .form-card,
+  .register-page .info-card {
+    padding: 16px;
+  }
+
+  .register-page .form-grid {
+    gap: 12px;
+  }
+
+  .register-page .checkbox-row {
+    padding: 11px 12px;
+  }
+}
