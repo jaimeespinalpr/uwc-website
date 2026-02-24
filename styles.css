@@ -1777,6 +1777,25 @@ body::before {
   display: block;
 }
 
+.hero h1 .hero-title-lockup {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(10px, 1.8vw, 18px);
+}
+
+.hero h1 .hero-title-text {
+  display: block;
+  min-width: 0;
+}
+
+.hero h1 .hero-title-logo {
+  display: block;
+  width: clamp(140px, 19vw, 220px);
+  height: auto;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 10px 22px rgba(5, 10, 20, 0.28));
+}
+
 .hero h1 .hero-title-main {
   font-size: 0.84em;
 }
@@ -2354,6 +2373,15 @@ textarea:focus-visible {
     letter-spacing: 0.1em;
   }
 
+  .hero h1 .hero-title-lockup {
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero h1 .hero-title-logo {
+    width: clamp(110px, 20vw, 150px);
+  }
+
   .page-hero h1 {
     font-size: clamp(2.3rem, 10vw, 3.8rem);
   }
@@ -2390,6 +2418,16 @@ textarea:focus-visible {
 
   .hero-lower-card .stack-list {
     grid-template-columns: 1fr;
+  }
+
+  .hero h1 .hero-title-lockup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .hero h1 .hero-title-logo {
+    width: clamp(110px, 34vw, 170px);
   }
 
   .btn,
