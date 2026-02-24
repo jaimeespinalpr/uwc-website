@@ -20,7 +20,7 @@ $email = clean_email((string) ($_POST['email'] ?? ''));
 $phone = clean_phone((string) ($_POST['phone'] ?? ''));
 $preferredContactMethod = clean_text((string) ($_POST['preferred_contact_method'] ?? ''));
 $notes = clean_text((string) ($_POST['notes'] ?? ''));
-$submissionSource = clean_text((string) ($_POST['submission_source'] ?? 'registration-prep'));
+$submissionSource = clean_text((string) ($_POST['submission_source'] ?? 'registration-application'));
 $confirmEnrollmentClosed = clean_text((string) ($_POST['confirm_enrollment_closed'] ?? ''));
 $confirmInfoAccurate = clean_text((string) ($_POST['confirm_info_accurate'] ?? ''));
 
@@ -160,9 +160,9 @@ $pricingSnapshotValidJson = $pricingSnapshotPosted !== '' && json_decode($pricin
 
 $submission = [
     'submitted_at_utc' => gmdate('c'),
-    'submission_source' => $submissionSource !== '' ? $submissionSource : 'registration-prep',
-    'registration_status' => 'priority_waitlist_enrollment_closed',
-    'payment_status' => 'checkout_not_open',
+    'submission_source' => $submissionSource !== '' ? $submissionSource : 'registration-application',
+    'registration_status' => 'application_received_payment_pending',
+    'payment_status' => 'checkout_coming_soon',
     'payment_type' => 'full_payment_when_open',
     'guardian_name' => $guardianName,
     'email' => $email,
@@ -172,7 +172,7 @@ $submission = [
     'estimated_subtotal' => number_format($baseSubtotal, 2, '.', ''),
     'estimated_discount_total' => number_format($discountTotal, 2, '.', ''),
     'estimated_total' => number_format($estimatedTotal, 2, '.', ''),
-    'estimated_tax_note' => 'Tax will be calculated at checkout when enrollment opens (if applicable).',
+    'estimated_tax_note' => 'Tax will be calculated at checkout when payment opens (if applicable).',
     'client_estimated_subtotal' => number_format($clientSubtotal, 2, '.', ''),
     'client_estimated_discount_total' => number_format($clientDiscount, 2, '.', ''),
     'client_estimated_total' => number_format($clientEstimatedTotal, 2, '.', ''),
@@ -304,10 +304,10 @@ function save_submission_csv(string $csvPath, array $submission): bool
 
 function send_club_notification(array $submission, array $athletes, array $pricingLines): bool
 {
-    $subject = 'New UWC Pre-Registration / Priority Waitlist - ' . $submission['guardian_name'];
+    $subject = 'New UWC Registration Application - Payment Pending - ' . $submission['guardian_name'];
 
     $lines = [
-        'A new UWC pre-registration request was submitted and added to the priority waitlist.',
+        'A new UWC registration application was submitted.',
         '',
         'Parent / Guardian: ' . $submission['guardian_name'],
         'Email: ' . $submission['email'],
@@ -317,7 +317,7 @@ function send_club_notification(array $submission, array $athletes, array $prici
         'Estimated Subtotal: $' . $submission['estimated_subtotal'],
         'Estimated Discounts: $' . $submission['estimated_discount_total'],
         'Estimated Total: $' . $submission['estimated_total'],
-        'Payment Status: checkout not open',
+        'Payment Status: checkout coming soon (application received)',
         '',
         'Athlete Summary:',
     ];
@@ -358,7 +358,7 @@ function send_club_notification(array $submission, array $athletes, array $prici
 
 function send_parent_confirmation(array $submission, array $athletes, array $pricingLines): bool
 {
-    $subject = 'UWC Priority Waitlist Confirmation - Family Registration Saved';
+    $subject = 'UWC Registration Application Received - Payment Checkout Coming Soon';
 
     $contactNameLine = '';
     if (defined('WAITLIST_CONTACT_NAME') && WAITLIST_CONTACT_NAME !== '') {
@@ -369,10 +369,10 @@ function send_parent_confirmation(array $submission, array $athletes, array $pri
     }
 
     $lines = [
-        'Thank you for submitting your family pre-registration for United Wrestling Club Spring Session 2026.',
+        'Thank you for submitting your family registration application for United Wrestling Club Spring Session 2026.',
         '',
-        'Enrollment and checkout are not open yet, but your family has been added to the priority waitlist.',
-        'We will send the registration/payment link when enrollment opens.',
+        'Your application has been received.',
+        'Payment checkout is not open yet, and we will send the payment link as soon as checkout opens.',
         '',
         'Family Registration Summary',
         'Parent / Guardian: ' . $submission['guardian_name'],
@@ -400,7 +400,7 @@ function send_parent_confirmation(array $submission, array $athletes, array $pri
     }
 
     $lines[] = '';
-    $lines[] = 'Tax will be calculated at checkout when enrollment opens (if applicable).';
+    $lines[] = 'Tax will be calculated at checkout when payment opens (if applicable).';
     $lines[] = '';
     if ($contactNameLine !== '') {
         $lines[] = $contactNameLine;
@@ -515,22 +515,22 @@ function build_parent_confirmation_html(array $submission, array $athletes, arra
             <tr>
               <td style="background:#081a34; padding:22px 24px; border-bottom:3px solid #c8102e;">
                 <img src="{$logoUrlEsc}" alt="United Wrestling Club" width="230" style="display:block; width:230px; max-width:100%; height:auto;" />
-                <div style="margin-top:10px; color:#dbeafe; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">Priority Waitlist Confirmation • Spring Session 2026</div>
+                <div style="margin-top:10px; color:#dbeafe; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">Registration Application Received • Spring Session 2026</div>
               </td>
             </tr>
             <tr>
               <td style="padding:24px;">
-                <h1 style="margin:0 0 8px 0; font-size:24px; line-height:1.15; color:#0f172a;">Your family pre-registration has been saved</h1>
+                <h1 style="margin:0 0 8px 0; font-size:24px; line-height:1.15; color:#0f172a;">Your registration application has been received</h1>
                 <p style="margin:0 0 14px 0; color:#334155; font-size:15px; line-height:1.55;">
-                  Thank you, {$guardianName}. We saved your family registration details and added your family to the <strong>priority waitlist</strong>.
-                  Enrollment and payment checkout are not open yet, but we will send the registration/payment link as soon as enrollment opens.
+                  Thank you, {$guardianName}. We received your family registration application and saved your registration details.
+                  Payment checkout is not open yet, but we will send the payment link as soon as checkout opens.
                 </p>
 
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #ecd4da; border-radius:10px; background:#fff7f9; margin:0 0 16px 0;">
                   <tr>
                     <td style="padding:14px 16px;">
                       <div style="color:#7f1d1d; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Payment status</div>
-                      <div style="color:#334155; font-size:14px; line-height:1.55;">Checkout is not open yet. This confirmation secures your place on the priority waitlist and stores your family registration details for faster enrollment later.</div>
+                      <div style="color:#334155; font-size:14px; line-height:1.55;">Applications are open and your submission has been received. Payment checkout is not open yet, and we will send the payment link as soon as it is available.</div>
                     </td>
                   </tr>
                 </table>
@@ -588,7 +588,7 @@ function build_parent_confirmation_html(array $submission, array $athletes, arra
                 </table>
 
                 <p style="margin:0 0 14px 0; color:#64748b; font-size:13px; line-height:1.55;">
-                  Tax is not included in this estimate. If applicable, tax will be calculated during checkout once enrollment opens.
+                  Tax is not included in this estimate. If applicable, tax will be calculated during checkout once payment opens.
                 </p>
 
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 16px 0;">
@@ -675,12 +675,12 @@ function build_club_notification_html(array $submission, array $athletes, array 
             <tr>
               <td style="background:#081a34; padding:20px 24px; border-bottom:3px solid #c8102e;">
                 <img src="{$logoUrlEsc}" alt="United Wrestling Club" width="220" style="display:block; width:220px; max-width:100%; height:auto;" />
-                <div style="margin-top:10px; color:#dbeafe; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">New Pre-Registration • Priority Waitlist</div>
+                <div style="margin-top:10px; color:#dbeafe; font-size:13px; letter-spacing:0.08em; text-transform:uppercase;">New Registration Application • Payment Pending</div>
               </td>
             </tr>
             <tr>
               <td style="padding:22px 24px;">
-                <h1 style="margin:0 0 12px 0; font-size:22px; color:#0f172a;">New Family Registration Prep Request</h1>
+                <h1 style="margin:0 0 12px 0; font-size:22px; color:#0f172a;">New Family Registration Application</h1>
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #dbe4f0; border-radius:10px; background:#f8fbff; margin-bottom:14px;">
                   <tr>
                     <td style="padding:14px 16px;">
@@ -698,7 +698,7 @@ function build_club_notification_html(array $submission, array $athletes, array 
                   <tr>
                     <td style="padding:14px 16px;">
                       <div style="color:#7f1d1d; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Enrollment / Payment</div>
-                      <div style="color:#334155; font-size:14px; line-height:1.55;">Enrollment checkout is not open. Family was added to the priority waitlist and sent a confirmation email.</div>
+                      <div style="color:#334155; font-size:14px; line-height:1.55;">Application received. Payment checkout is not open yet. Family was sent a confirmation email and payment will be requested when checkout opens.</div>
                     </td>
                   </tr>
                 </table>

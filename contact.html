@@ -6,7 +6,7 @@
   <title>Register | United Wrestling Club</title>
   <meta
     name="description"
-    content="Build your family registration for United Wrestling Club Spring Session 2026. Estimate totals for multiple athletes and join the priority waitlist until enrollment opens."
+    content="Register now for United Wrestling Club Spring Session 2026. Build your family registration application, estimate totals for multiple athletes, and submit now while checkout opens soon."
   />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -40,12 +40,12 @@
 
   <main class="container page-shell">
     <section class="page-hero" aria-labelledby="registration-title">
-      <span class="pill">Pre-registration</span>
-      <h1 id="registration-title">Family registration builder and payment preview</h1>
+      <span class="pill">Register Now</span>
+      <h1 id="registration-title">Register now: family application and payment preview</h1>
       <p>
-        Build your family registration now and review the estimated total before enrollment opens. Checkout is not
-        active yet, so this page will save your information and add your family to the <strong>priority waitlist</strong>
-        in one click.
+        Applications are open now. Build your family registration application and review the estimated total.
+        Payment checkout is not active yet, so this page will submit your application now and save your registration
+        details so we can send the checkout link when payment opens.
       </p>
       <div class="badge-line">
         <span class="badge-soft">Full payment structure</span>
@@ -61,7 +61,7 @@
           <h2 class="section-title" id="register-title">Prepare your family registration now</h2>
         </div>
         <p class="section-note">
-          We will collect your details, estimate your total, and place your family on the priority waitlist until enrollment opens.
+          We will collect your details, estimate your total, and submit your registration application now while payment checkout opens soon.
         </p>
       </div>
 
@@ -74,7 +74,7 @@
 
           <div class="form-grid">
             <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot-field" aria-hidden="true" />
-            <input type="hidden" name="submission_source" value="registration-prep" />
+            <input type="hidden" name="submission_source" value="registration-application" />
             <input type="hidden" name="athlete_count" id="athlete-count-input" value="1" />
             <input type="hidden" name="estimated_subtotal" id="estimated-subtotal-input" value="0" />
             <input type="hidden" name="estimated_discount_total" id="estimated-discount-input" value="0" />
@@ -135,7 +135,7 @@
           <div class="checkbox-stack" role="group" aria-label="Required confirmations">
             <label class="checkbox-row">
               <input type="checkbox" name="confirm_enrollment_closed" value="yes" required />
-              <span>I understand enrollment and payment checkout are not open yet. Submitting this form adds my family to the priority waitlist.</span>
+              <span>I understand payment checkout is not open yet. Submitting this form sends my family's registration application now.</span>
             </label>
             <label class="checkbox-row">
               <input type="checkbox" name="confirm_info_accurate" value="yes" required />
@@ -148,19 +148,19 @@
           <div class="payment-preview-card">
             <h3>Payment Step</h3>
             <p>
-              Enrollment is not open yet. We are collecting family registration details now so we can notify you first and send the checkout link when enrollment opens.
+              Applications are open now. Payment checkout is not open yet, so we will receive your registration application and send the checkout link as soon as payment opens.
             </p>
             <div class="payment-lock-banner">
-              Checkout is currently locked until enrollment opens.
+              Payment checkout opens soon.
             </div>
             <button type="button" class="btn btn-md btn-secondary is-disabled-btn" disabled aria-disabled="true">
-              Payment Checkout (opens later)
+              Payment Checkout (coming soon)
             </button>
             <button type="submit" class="btn btn-md btn-primary" id="join-priority-btn">
-              Save Family Info + Join Priority Waitlist
+              Register Now
             </button>
             <p class="micro">
-              One click saves your family registration details and sends a confirmation email.
+              One click submits your registration application and sends a confirmation email.
             </p>
           </div>
 
@@ -188,7 +188,7 @@
             </div>
 
             <p class="micro">
-              Tax is not calculated here. If applicable, tax will be calculated during checkout when enrollment opens.
+              Tax is not calculated here. If applicable, tax will be calculated during checkout when payment opens.
             </p>
           </div>
 
@@ -198,17 +198,17 @@
               <li>1st athlete: full price ($285)</li>
               <li>2nd athlete: 50% off</li>
               <li>3rd athlete and up: 25% off</li>
-              <li>Payment type: full payment at checkout (when enrollment opens)</li>
+              <li>Payment type: full payment when checkout opens</li>
             </ul>
           </div>
 
           <div class="info-card-subsection">
             <h3>What you receive now</h3>
             <ul class="check-list compact-check-list">
-              <li>Priority waitlist placement</li>
+              <li>Registration application received</li>
               <li>Email confirmation with your registration summary</li>
               <li>Estimated total for your family</li>
-              <li>Enrollment/payment link when registration opens</li>
+              <li>Payment link when checkout opens</li>
             </ul>
           </div>
         </aside>
@@ -218,7 +218,7 @@
     <footer class="site-footer">
       <div class="footer-grid">
         <div class="footer-copy">
-          United Wrestling Club | Registration Prep & Waitlist | Spring Session 2026
+          United Wrestling Club | Register Now | Spring Session 2026
         </div>
         <div class="footer-links" aria-label="Footer links">
           <a href="index.html">HOME</a>
@@ -324,10 +324,10 @@
 
         if (status === "success") {
           notice.classList.add("is-success");
-          notice.innerHTML = "<strong>Thank you.</strong> Your family pre-registration was saved and added to the priority waitlist. Please check your email for confirmation.";
+          notice.innerHTML = "<strong>Thank you.</strong> Your registration application was received. Please check your email for confirmation.";
         } else if (status === "partial") {
           notice.classList.add("is-warning");
-          notice.innerHTML = "<strong>Submitted.</strong> Your family pre-registration was saved, but the confirmation email could not be sent.";
+          notice.innerHTML = "<strong>Submitted.</strong> Your registration application was received, but the confirmation email could not be sent.";
         } else {
           notice.classList.add("is-error");
           notice.innerHTML = "<strong>We could not submit the form.</strong> " + (msg || "Please try again.");
