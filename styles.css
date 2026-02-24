@@ -604,6 +604,13 @@ img {
   font-size: 0.92rem;
 }
 
+.fun-accent {
+  color: var(--orange-500);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .path-card .time {
   margin-top: 10px;
   padding-top: 10px;
