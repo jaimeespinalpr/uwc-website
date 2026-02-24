@@ -592,6 +592,26 @@ img {
   color: var(--navy-700);
 }
 
+.path-label-red {
+  background: #c8102e;
+  border-color: #c8102e;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(200, 16, 46, 0.18);
+}
+
+.path-label-white {
+  background: #ffffff;
+  border-color: rgba(8, 26, 52, 0.18);
+  color: var(--navy-900);
+}
+
+.path-label-blue {
+  background: #123462;
+  border-color: #123462;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(18, 52, 98, 0.18);
+}
+
 .path-card h3 {
   margin: 10px 0 0;
   color: var(--navy-900);
