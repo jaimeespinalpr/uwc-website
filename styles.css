@@ -582,13 +582,14 @@ img {
   align-items: center;
   gap: 8px;
   border-radius: 999px;
-  padding: 6px 10px;
+  padding: 7px 12px;
   border: 1px solid var(--line);
   background: rgba(18, 52, 98, 0.03);
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.84rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  line-height: 1;
   color: var(--navy-700);
 }
 
@@ -597,11 +598,12 @@ img {
   border-color: #c8102e;
   color: #ffffff;
   box-shadow: 0 6px 14px rgba(200, 16, 46, 0.18);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .path-label-white {
-  background: #ffffff;
-  border-color: rgba(8, 26, 52, 0.18);
+  background: #f8fbff;
+  border-color: rgba(8, 26, 52, 0.28);
   color: var(--navy-900);
 }
 
@@ -610,6 +612,7 @@ img {
   border-color: #123462;
   color: #ffffff;
   box-shadow: 0 6px 14px rgba(18, 52, 98, 0.18);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.14);
 }
 
 .path-card h3 {
@@ -1666,8 +1669,10 @@ body::before {
   border-radius: 5px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
   box-shadow: none;
+  text-shadow: none;
 }
 
 .btn-sm {
@@ -1686,7 +1691,7 @@ body::before {
 }
 
 .btn-primary {
-  color: #ffffff;
+  color: #ffffff !important;
   background: linear-gradient(180deg, #ff5468, var(--orange-500));
   border-color: rgba(200, 16, 46, 0.35);
   box-shadow: 0 10px 18px rgba(200, 16, 46, 0.18);
@@ -1695,7 +1700,7 @@ body::before {
 .btn-secondary {
   background: #fff;
   border-color: var(--line);
-  color: var(--navy-900);
+  color: var(--navy-900) !important;
   box-shadow: none;
 }
 
