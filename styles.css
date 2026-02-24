@@ -1796,7 +1796,7 @@ body::before {
 .hero h1 {
   color: var(--white);
   font-family: "Teko", sans-serif;
-  font-size: clamp(3.4rem, 7.8vw, 7rem);
+  font-size: clamp(4rem, 9vw, 8rem);
   line-height: 0.8;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -1811,7 +1811,7 @@ body::before {
 
 .hero h1 .hero-title-lockup {
   display: flex;
-  --hero-lockup-height: clamp(170px, 19vw, 250px);
+  --hero-lockup-height: clamp(190px, 21vw, 290px);
   align-items: stretch;
   gap: clamp(10px, 1.8vw, 18px);
 }
@@ -1822,7 +1822,7 @@ body::before {
   justify-content: space-between;
   height: var(--hero-lockup-height);
   min-width: 0;
-  padding: 2px 0 1px;
+  padding: 0;
 }
 
 .hero h1 .hero-title-logo {
@@ -1834,14 +1834,14 @@ body::before {
 }
 
 .hero h1 .hero-title-main {
-  font-size: 0.82em;
-  line-height: 0.78;
+  font-size: 0.88em;
+  line-height: 0.74;
 }
 
 .hero h1 .hero-year {
-  font-size: 1.28em;
-  line-height: 0.72;
-  letter-spacing: 0.05em;
+  font-size: 1.4em;
+  line-height: 0.66;
+  letter-spacing: 0.04em;
 }
 
 .hero h1 .hero-date {
@@ -2404,7 +2404,7 @@ textarea:focus-visible {
   }
 
   .hero h1 {
-    font-size: clamp(2.8rem, 12vw, 4.9rem);
+    font-size: clamp(3.2rem, 12vw, 5.8rem);
   }
 
   .hero h1 .hero-date {
@@ -2412,7 +2412,7 @@ textarea:focus-visible {
   }
 
   .hero h1 .hero-title-lockup {
-    --hero-lockup-height: clamp(115px, 20vw, 150px);
+    --hero-lockup-height: clamp(135px, 21vw, 180px);
     align-items: center;
     gap: 12px;
   }
