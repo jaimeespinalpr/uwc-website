@@ -170,15 +170,32 @@ $checkoutParams = [
     'payment_intent_data[metadata][guardian_email]' => substr($email, 0, 500),
 ];
 
-if (stripe_automatic_tax_enabled()) {
+$automaticTaxRequested = stripe_automatic_tax_enabled();
+$automaticTaxEnabledInSession = false;
+if ($automaticTaxRequested) {
     $checkoutParams['automatic_tax[enabled]'] = 'true';
 }
 
 try {
     $session = stripe_api_request('POST', '/v1/checkout/sessions', $checkoutParams);
+    $automaticTaxEnabledInSession = $automaticTaxRequested;
 } catch (Throwable $e) {
-    log_stripe_registration_error('Stripe checkout session create failed: ' . $e->getMessage());
-    redirect_back_with_status('error', 'Checkout could not be started. Please try again in a moment.');
+    $message = $e->getMessage();
+
+    if ($automaticTaxRequested && should_retry_without_automatic_tax($message)) {
+        unset($checkoutParams['automatic_tax[enabled]']);
+        try {
+            $session = stripe_api_request('POST', '/v1/checkout/sessions', $checkoutParams);
+            $automaticTaxEnabledInSession = false;
+            log_stripe_registration_error('Stripe checkout created without automatic tax fallback: ' . $message);
+        } catch (Throwable $retryError) {
+            log_stripe_registration_error('Stripe checkout session retry failed: ' . $retryError->getMessage());
+            redirect_back_with_status('error', 'Checkout could not be started. Please try again in a moment.');
+        }
+    } else {
+        log_stripe_registration_error('Stripe checkout session create failed: ' . $message);
+        redirect_back_with_status('error', 'Checkout could not be started. Please try again in a moment.');
+    }
 }
 
 $submission = [
@@ -189,6 +206,8 @@ $submission = [
     'checkout_session_id' => (string) ($session['id'] ?? ''),
     'checkout_session_url' => (string) ($session['url'] ?? ''),
     'checkout_session_status' => (string) ($session['status'] ?? ''),
+    'automatic_tax_requested' => $automaticTaxRequested ? 'yes' : 'no',
+    'automatic_tax_enabled_in_session' => $automaticTaxEnabledInSession ? 'yes' : 'no',
     'payment_status' => 'checkout_started',
     'guardian_name' => $guardianName,
     'email' => $email,
@@ -317,4 +336,12 @@ function log_stripe_registration_error(string $message): void
 {
     $line = '[' . gmdate('c') . '] ' . $message . PHP_EOL;
     @file_put_contents(STRIPE_REGISTRATION_ERROR_LOG, $line, FILE_APPEND);
+}
+
+function should_retry_without_automatic_tax(string $message): bool
+{
+    $message = strtolower($message);
+    return str_contains($message, 'automatic tax')
+        || str_contains($message, 'head office address')
+        || str_contains($message, 'tax calculation');
 }
