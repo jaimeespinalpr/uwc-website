@@ -54,7 +54,7 @@
       <div class="badge-line">
         <span class="badge-soft">Full payment structure</span>
         <span class="badge-soft">2nd athlete 50% off</span>
-        <span class="badge-soft">3rd+ athlete 25% off</span>
+        <span class="badge-soft">3rd+ athlete 75% off</span>
       </div>
     </section>
 
@@ -201,7 +201,7 @@
             <ul class="check-list compact-check-list">
               <li>1st athlete: full price ($285)</li>
               <li>2nd athlete: 50% off</li>
-              <li>3rd athlete and up: 25% off</li>
+              <li>3rd athlete and up: 75% off</li>
               <li>Payment type: full payment when checkout opens</li>
             </ul>
           </div>
@@ -417,7 +417,7 @@
         if (position === 2) {
           discountRate = 0.5;
         } else if (position >= 3) {
-          discountRate = 0.25;
+          discountRate = 0.75;
         }
 
         var discountAmount = BASE_PRICE * discountRate;
@@ -428,7 +428,7 @@
         } else if (position === 2) {
           label = "50% off · " + formatCurrency(total);
         } else {
-          label = "25% off · " + formatCurrency(total);
+          label = "75% off · " + formatCurrency(total);
         }
 
         return {

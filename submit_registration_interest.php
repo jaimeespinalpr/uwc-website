@@ -241,7 +241,7 @@ function calculate_line_pricing(int $athletePosition): array
     if ($athletePosition === 2) {
         $discountRate = 0.50;
     } elseif ($athletePosition >= 3) {
-        $discountRate = 0.25;
+        $discountRate = 0.75;
     }
 
     $basePrice = REGISTRATION_BASE_PRICE;
@@ -251,8 +251,8 @@ function calculate_line_pricing(int $athletePosition): array
     $discountLabel = 'Full price';
     if ($discountRate === 0.50) {
         $discountLabel = '50% off';
-    } elseif ($discountRate === 0.25) {
-        $discountLabel = '25% off';
+    } elseif ($discountRate === 0.75) {
+        $discountLabel = '75% off';
     }
 
     return [
