@@ -62,6 +62,35 @@ jobs:
             echo "Stripe secrets not configured. Skipping stripe-config.php generation."
           fi
 
+      - name: Generate SMTP runtime config (optional)
+        env:
+          MAIL_SMTP_ENABLED: ${{ secrets.MAIL_SMTP_ENABLED }}
+          MAIL_SMTP_HOST: ${{ secrets.MAIL_SMTP_HOST }}
+          MAIL_SMTP_PORT: ${{ secrets.MAIL_SMTP_PORT }}
+          MAIL_SMTP_ENCRYPTION: ${{ secrets.MAIL_SMTP_ENCRYPTION }}
+          MAIL_SMTP_USERNAME: ${{ secrets.MAIL_SMTP_USERNAME }}
+          MAIL_SMTP_PASSWORD: ${{ secrets.MAIL_SMTP_PASSWORD }}
+          MAIL_SMTP_TIMEOUT: ${{ secrets.MAIL_SMTP_TIMEOUT }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "${MAIL_SMTP_PASSWORD:-}" ] && [ -n "${MAIL_SMTP_USERNAME:-}" ] && [ -n "${MAIL_SMTP_HOST:-}" ]; then
+            cat > dist/mail-smtp-config.php <<PHP
+<?php
+declare(strict_types=1);
+define('UWC_SMTP_ENABLED', ${MAIL_SMTP_ENABLED:-true});
+define('UWC_SMTP_HOST', '${MAIL_SMTP_HOST}');
+define('UWC_SMTP_PORT', ${MAIL_SMTP_PORT:-587});
+define('UWC_SMTP_ENCRYPTION', '${MAIL_SMTP_ENCRYPTION:-tls}');
+define('UWC_SMTP_USERNAME', '${MAIL_SMTP_USERNAME}');
+define('UWC_SMTP_PASSWORD', '${MAIL_SMTP_PASSWORD}');
+define('UWC_SMTP_TIMEOUT', ${MAIL_SMTP_TIMEOUT:-20});
+PHP
+            echo "Generated dist/mail-smtp-config.php from GitHub Actions secrets."
+          else
+            echo "SMTP secrets not configured. Skipping mail-smtp-config.php generation."
+          fi
+
       - name: Install lftp
         run: |
           sudo apt-get update

@@ -7,6 +7,7 @@ declare(strict_types=1);
 // - emails the parent/guardian (confirmation)
 
 require_once __DIR__ . '/waitlist-config.php';
+require_once __DIR__ . '/smtp-mailer.php';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     redirect_with_status('error', 'Invalid request method.');
@@ -245,7 +246,7 @@ function send_mail_message(
 
     if ($htmlBody === null || trim($htmlBody) === '') {
         $headers[] = 'Content-Type: text/plain; charset=UTF-8';
-        return @mail($to, $subject, $plainTextBody, implode("\r\n", $headers));
+        return uwc_transport_mail($to, $subject, $plainTextBody, implode("\r\n", $headers));
     }
 
     $boundary = 'uwc_' . md5(uniqid((string) mt_rand(), true));
@@ -264,7 +265,7 @@ function send_mail_message(
 
     $message .= '--' . $boundary . "--\r\n";
 
-    return @mail($to, $subject, $message, implode("\r\n", $headers));
+    return uwc_transport_mail($to, $subject, $message, implode("\r\n", $headers));
 }
 
 function send_plain_text_mail(string $to, string $subject, string $body, array $extraHeaders = []): bool

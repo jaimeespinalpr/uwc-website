@@ -1,9 +1,14 @@
 <?php
 declare(strict_types=1);
 
+$uwcSmtpConfigPath = __DIR__ . '/mail-smtp-config.php';
+if (is_file($uwcSmtpConfigPath)) {
+    require_once $uwcSmtpConfigPath;
+}
+
 /*
  * UWC Waitlist form configuration
- * Replace these values with your real addresses before using in production.
+ * Primary contact addresses used by UWC forms and confirmations.
  */
 
 define('WAITLIST_ADMIN_EMAIL', 'gmunch@united-wc.com');    // Where UWC receives submissions

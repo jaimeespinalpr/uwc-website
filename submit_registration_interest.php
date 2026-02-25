@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/waitlist-config.php';
+require_once __DIR__ . '/smtp-mailer.php';
 
 const REGISTRATION_BASE_PRICE = 285.00;
 const REGISTRATION_INTEREST_STORAGE_CSV = __DIR__ . '/data/registration_interest_submissions.csv';
@@ -437,7 +438,7 @@ function send_mail_message(string $to, string $subject, string $plainTextBody, ?
 
     if ($htmlBody === null || trim($htmlBody) === '') {
         $headers[] = 'Content-Type: text/plain; charset=UTF-8';
-        return @mail($to, $subject, $plainTextBody, implode("\r\n", $headers));
+        return uwc_transport_mail($to, $subject, $plainTextBody, implode("\r\n", $headers));
     }
 
     $boundary = 'uwc_' . md5(uniqid((string) mt_rand(), true));
@@ -454,7 +455,7 @@ function send_mail_message(string $to, string $subject, string $plainTextBody, ?
     $message .= $htmlBody . "\r\n\r\n";
     $message .= '--' . $boundary . "--\r\n";
 
-    return @mail($to, $subject, $message, implode("\r\n", $headers));
+    return uwc_transport_mail($to, $subject, $message, implode("\r\n", $headers));
 }
 
 function build_parent_confirmation_html(array $submission, array $athletes, array $pricingLines): string
