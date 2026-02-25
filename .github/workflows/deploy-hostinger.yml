@@ -37,6 +37,31 @@ jobs:
             --exclude '.DS_Store' \
             ./ dist/
 
+      - name: Generate Stripe runtime config (optional)
+        env:
+          STRIPE_MODE: ${{ secrets.STRIPE_MODE }}
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "${STRIPE_SECRET_KEY:-}" ]; then
+            cat > dist/stripe-config.php <<PHP
+          <?php
+          declare(strict_types=1);
+          define('STRIPE_MODE', '${STRIPE_MODE:-test}');
+          define('STRIPE_PUBLISHABLE_KEY', '${STRIPE_PUBLISHABLE_KEY:-}');
+          define('STRIPE_SECRET_KEY', '${STRIPE_SECRET_KEY}');
+          define('STRIPE_WEBHOOK_SECRET', '${STRIPE_WEBHOOK_SECRET:-}');
+          define('STRIPE_CURRENCY', 'usd');
+          define('STRIPE_ENABLE_AUTOMATIC_TAX', true);
+          PHP
+            echo "Generated dist/stripe-config.php from GitHub Actions secrets."
+          else
+            echo "Stripe secrets not configured. Skipping stripe-config.php generation."
+          fi
+
       - name: Install lftp
         run: |
           sudo apt-get update
