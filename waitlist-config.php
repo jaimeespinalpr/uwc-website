@@ -6,14 +6,14 @@ declare(strict_types=1);
  * Replace these values with your real addresses before using in production.
  */
 
-define('WAITLIST_ADMIN_EMAIL', 'register@united-wc.com');  // Where UWC receives submissions
-define('WAITLIST_CONTACT_EMAIL', 'info@united-wc.com');    // Shown to families in confirmation email
+define('WAITLIST_ADMIN_EMAIL', 'gmunch@united-wc.com');    // Where UWC receives submissions
+define('WAITLIST_CONTACT_EMAIL', 'gmunch@united-wc.com');  // Shown to families in confirmation email
 define('WAITLIST_CONTACT_NAME', 'Gary Munch');
 define('WAITLIST_CONTACT_TITLE', 'Director of Operations and Founder');
 define('WAITLIST_CONTACT_PHONE', '302-528-2180');
 
 define('WAITLIST_FROM_NAME', 'United Wrestling Club');
-define('WAITLIST_FROM_EMAIL', 'noreply@united-wc.com');    // Best if this mailbox exists on your domain
+define('WAITLIST_FROM_EMAIL', 'gmunch@united-wc.com');     // Best if this mailbox exists on your domain
 define('WAITLIST_SITE_URL', 'https://united-wc.com');
 define('WAITLIST_LOGO_URL', 'https://united-wc.com/assets/uwc-logo.png');
 
