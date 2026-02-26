@@ -1026,6 +1026,10 @@ img {
   object-position: 73% center;
 }
 
+.coach-photo-chris {
+  object-position: center 20%;
+}
+
 .coach-role {
   margin: 0 0 4px;
   font-family: "Teko", sans-serif;
