@@ -1030,6 +1030,10 @@ img {
   object-position: center 20%;
 }
 
+.coach-photo-gary {
+  object-position: center 18%;
+}
+
 .coach-role {
   margin: 0 0 4px;
   font-family: "Teko", sans-serif;
