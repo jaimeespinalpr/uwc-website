@@ -5,6 +5,7 @@ require_once __DIR__ . '/waitlist-config.php';
 require_once __DIR__ . '/stripe-config.php';
 require_once __DIR__ . '/stripe-helpers.php';
 require_once __DIR__ . '/smtp-mailer.php';
+require_once __DIR__ . '/excel-exports.php';
 
 const STRIPE_PAYMENT_SUCCESS_LOG = __DIR__ . '/data/stripe_payment_success.csv';
 const STRIPE_PAYMENT_SUCCESS_ERRORS = __DIR__ . '/data/stripe_payment_success_errors.log';
@@ -40,6 +41,9 @@ if (is_array($session)) {
         $isPaid = true;
         $statusText = 'Payment completed successfully.';
         record_paid_session($session, $submissionId);
+        if (!uwc_excel_export_payment($session, $submissionId, 'payment_success_page')) {
+            log_payment_success_error('Failed to save Excel-friendly payment export for session ' . (string) ($session['id'] ?? ''));
+        }
         $confirmationEmailStatus = send_payment_confirmation_emails_if_needed($session, $submissionId);
     } elseif ($paymentStatus !== '') {
         $statusText = 'Checkout completed, but payment status is: ' . $paymentStatus . '.';

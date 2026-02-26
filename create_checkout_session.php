@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/waitlist-config.php';
 require_once __DIR__ . '/stripe-config.php';
 require_once __DIR__ . '/stripe-helpers.php';
+require_once __DIR__ . '/excel-exports.php';
 
 const REGISTRATION_BASE_PRICE = 285.00;
 const STRIPE_REGISTRATION_SUBMISSIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
@@ -227,6 +228,9 @@ $submission = [
 
 if (!save_submission_csv(STRIPE_REGISTRATION_SUBMISSIONS_CSV, $submission)) {
     log_stripe_registration_error('Failed to save stripe registration submission ' . $submissionId);
+}
+if (!uwc_excel_export_registration($submission, $athletes, $pricingLines)) {
+    log_stripe_registration_error('Failed to save Excel-friendly registration exports for ' . $submissionId);
 }
 
 $checkoutUrl = (string) ($session['url'] ?? '');

@@ -5,6 +5,7 @@ require_once __DIR__ . '/waitlist-config.php';
 require_once __DIR__ . '/stripe-config.php';
 require_once __DIR__ . '/stripe-helpers.php';
 require_once __DIR__ . '/smtp-mailer.php';
+require_once __DIR__ . '/excel-exports.php';
 
 const STRIPE_WEBHOOK_ERROR_LOG = __DIR__ . '/data/stripe_webhook_errors.log';
 const STRIPE_PAYMENT_SUCCESS_LOG = __DIR__ . '/data/stripe_payment_success.csv';
@@ -71,6 +72,9 @@ if ($paymentStatus !== 'paid') {
 }
 
 record_paid_session_webhook($session, $submissionId);
+if (!uwc_excel_export_payment($session, $submissionId, 'stripe_webhook')) {
+    webhook_log_error('Failed to save Excel-friendly payment export for session ' . $sessionId);
+}
 $emailStatus = send_payment_confirmation_emails_if_needed_webhook($session, $submissionId);
 
 webhook_respond(200, [
