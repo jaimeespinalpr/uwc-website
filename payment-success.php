@@ -356,7 +356,11 @@ function send_payment_confirmation_emails_if_needed(array $session, string $subm
     if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
         $clubHeaders[] = 'Reply-To: ' . $guardianEmail;
     }
-    $clubSent = payment_send_mail_message(WAITLIST_ADMIN_EMAIL, $clubSubject, $clubPlain, $clubHtml, $clubHeaders);
+    $paymentNotificationEmail = (defined('WAITLIST_PAYMENT_EMAIL') && trim((string) WAITLIST_PAYMENT_EMAIL) !== '')
+        ? (string) WAITLIST_PAYMENT_EMAIL
+        : WAITLIST_ADMIN_EMAIL;
+
+    $clubSent = payment_send_mail_message($paymentNotificationEmail, $clubSubject, $clubPlain, $clubHtml, $clubHeaders);
 
     if ($parentSent && $clubSent) {
         payment_confirmation_mark_sent($sessionId);
