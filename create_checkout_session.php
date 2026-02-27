@@ -4,11 +4,16 @@ declare(strict_types=1);
 require_once __DIR__ . '/waitlist-config.php';
 require_once __DIR__ . '/stripe-config.php';
 require_once __DIR__ . '/stripe-helpers.php';
+require_once __DIR__ . '/smtp-mailer.php';
 require_once __DIR__ . '/excel-exports.php';
 
 const REGISTRATION_BASE_PRICE = 285.00;
+const CLASS_CAPACITY_MAX = 24;
 const STRIPE_REGISTRATION_SUBMISSIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
 const STRIPE_REGISTRATION_ERROR_LOG = __DIR__ . '/data/stripe_registration_errors.log';
+const STRIPE_PAYMENT_SUCCESS_LOG = __DIR__ . '/data/stripe_payment_success.csv';
+const STRIPE_CLASS_WAITLIST_CSV = __DIR__ . '/data/stripe_class_waitlist.csv';
+const STRIPE_CLASS_WAITLIST_ERROR_LOG = __DIR__ . '/data/stripe_class_waitlist_errors.log';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     redirect_back_with_status('error', 'Invalid request method.');
@@ -143,6 +148,49 @@ for ($i = 0; $i < $athleteCount; $i++) {
 $baseSubtotal = normalize_money($baseSubtotal);
 $discountTotal = normalize_money($discountTotal);
 $estimatedTotal = normalize_money($estimatedTotal);
+
+// Capacity guard: if any selected class is full, skip checkout and place this submission on waitlist.
+$requestedClassCounts = build_requested_class_counts($athletes);
+$paidClassCounts = get_paid_class_counts_for_classes(array_values($allowedClasses));
+$fullClasses = find_full_classes($requestedClassCounts, $paidClassCounts, CLASS_CAPACITY_MAX);
+if (!empty($fullClasses)) {
+    $waitlistId = 'uwc_wl_' . gmdate('Ymd_His') . '_' . substr(bin2hex(random_bytes(4)), 0, 8);
+    $waitlistRecord = [
+        'submitted_at_utc' => gmdate('c'),
+        'waitlist_id' => $waitlistId,
+        'submission_source' => $submissionSource !== '' ? $submissionSource : 'stripe-checkout-registration',
+        'status' => 'waitlisted_class_full',
+        'guardian_name' => $guardianName,
+        'email' => $email,
+        'phone' => $phone,
+        'preferred_contact_method' => $preferredContactMethod,
+        'total_athletes' => (string) count($athletes),
+        'estimated_subtotal' => number_format($baseSubtotal, 2, '.', ''),
+        'estimated_discount_total' => number_format($discountTotal, 2, '.', ''),
+        'estimated_total' => number_format($estimatedTotal, 2, '.', ''),
+        'currency' => stripe_currency_code(),
+        'full_classes_summary' => implode(' | ', array_map(
+            static fn ($item) => $item['class_name'] . ' (' . $item['remaining'] . ' spots remaining)',
+            $fullClasses
+        )),
+        'full_classes_json' => json_encode($fullClasses, JSON_UNESCAPED_SLASHES),
+        'requested_class_counts_json' => json_encode($requestedClassCounts, JSON_UNESCAPED_SLASHES),
+        'athletes_json' => json_encode($athletes, JSON_UNESCAPED_SLASHES),
+        'notes' => $notes,
+        'ip_address' => (string) ($_SERVER['REMOTE_ADDR'] ?? ''),
+        'user_agent' => (string) ($_SERVER['HTTP_USER_AGENT'] ?? ''),
+    ];
+
+    if (!save_submission_csv(STRIPE_CLASS_WAITLIST_CSV, $waitlistRecord)) {
+        log_class_waitlist_error('Failed to save class waitlist submission ' . $waitlistId);
+    }
+    send_class_waitlist_emails($waitlistRecord, $athletes, $fullClasses);
+
+    $classNames = array_map(static fn ($item) => $item['class_name'], $fullClasses);
+    $msg = 'One or more selected classes are currently full (' . implode(', ', $classNames) . '). '
+        . 'Your athlete(s) have been added to the waitlist, and we will contact you as soon as a spot opens.';
+    redirect_back_with_status('waitlist', $msg);
+}
 
 $submissionId = 'uwc_' . gmdate('Ymd_His') . '_' . substr(bin2hex(random_bytes(4)), 0, 8);
 $siteBaseUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://united-wc.com'), '/');
@@ -348,4 +396,213 @@ function should_retry_without_automatic_tax(string $message): bool
     return str_contains($message, 'automatic tax')
         || str_contains($message, 'head office address')
         || str_contains($message, 'tax calculation');
+}
+
+function build_requested_class_counts(array $athletes): array
+{
+    $counts = [];
+    foreach ($athletes as $athlete) {
+        $className = trim((string) ($athlete['class_interest'] ?? ''));
+        if ($className === '') {
+            continue;
+        }
+        if (!isset($counts[$className])) {
+            $counts[$className] = 0;
+        }
+        $counts[$className]++;
+    }
+    return $counts;
+}
+
+function get_paid_class_counts_for_classes(array $knownClassNames): array
+{
+    $counts = [];
+    foreach ($knownClassNames as $className) {
+        $counts[(string) $className] = 0;
+    }
+
+    $paidSessionIds = get_paid_stripe_session_ids();
+    if (empty($paidSessionIds) || !file_exists(STRIPE_REGISTRATION_SUBMISSIONS_CSV)) {
+        return $counts;
+    }
+
+    $handle = fopen(STRIPE_REGISTRATION_SUBMISSIONS_CSV, 'rb');
+    if ($handle === false) {
+        return $counts;
+    }
+
+    try {
+        $header = fgetcsv($handle);
+        if (!is_array($header)) {
+            return $counts;
+        }
+        $sessionIdx = array_search('checkout_session_id', $header, true);
+        $athletesIdx = array_search('athletes_json', $header, true);
+        if ($sessionIdx === false || $athletesIdx === false) {
+            return $counts;
+        }
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $sessionId = trim((string) ($row[$sessionIdx] ?? ''));
+            if ($sessionId === '' || !isset($paidSessionIds[$sessionId])) {
+                continue;
+            }
+
+            $athletesJson = (string) ($row[$athletesIdx] ?? '');
+            $athletes = json_decode($athletesJson, true);
+            if (!is_array($athletes)) {
+                continue;
+            }
+
+            foreach ($athletes as $athlete) {
+                $className = trim((string) (($athlete['class_interest'] ?? '')));
+                if ($className === '') {
+                    continue;
+                }
+                if (!isset($counts[$className])) {
+                    $counts[$className] = 0;
+                }
+                $counts[$className]++;
+            }
+        }
+    } finally {
+        fclose($handle);
+    }
+
+    return $counts;
+}
+
+function get_paid_stripe_session_ids(): array
+{
+    if (!file_exists(STRIPE_PAYMENT_SUCCESS_LOG)) {
+        return [];
+    }
+
+    $handle = fopen(STRIPE_PAYMENT_SUCCESS_LOG, 'rb');
+    if ($handle === false) {
+        return [];
+    }
+
+    $sessionIdSet = [];
+    try {
+        $header = fgetcsv($handle);
+        if (!is_array($header)) {
+            return [];
+        }
+        $sessionIdx = array_search('session_id', $header, true);
+        if ($sessionIdx === false) {
+            return [];
+        }
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $sessionId = trim((string) ($row[$sessionIdx] ?? ''));
+            if ($sessionId !== '') {
+                $sessionIdSet[$sessionId] = true;
+            }
+        }
+    } finally {
+        fclose($handle);
+    }
+
+    return $sessionIdSet;
+}
+
+function find_full_classes(array $requestedClassCounts, array $paidClassCounts, int $capacityPerClass): array
+{
+    $full = [];
+    foreach ($requestedClassCounts as $className => $requestedCount) {
+        $requestedCount = (int) $requestedCount;
+        $paidCount = (int) ($paidClassCounts[$className] ?? 0);
+        $remaining = max(0, $capacityPerClass - $paidCount);
+        if ($requestedCount > $remaining) {
+            $full[] = [
+                'class_name' => $className,
+                'capacity' => $capacityPerClass,
+                'currently_paid' => $paidCount,
+                'remaining' => $remaining,
+                'requested_now' => $requestedCount,
+            ];
+        }
+    }
+
+    return $full;
+}
+
+function send_class_waitlist_emails(array $waitlistRecord, array $athletes, array $fullClasses): void
+{
+    $guardianEmail = trim((string) ($waitlistRecord['email'] ?? ''));
+    $guardianName = trim((string) ($waitlistRecord['guardian_name'] ?? 'Parent / Guardian'));
+    $waitlistId = trim((string) ($waitlistRecord['waitlist_id'] ?? ''));
+    $fullClassNames = implode(', ', array_map(static fn ($item) => (string) ($item['class_name'] ?? ''), $fullClasses));
+    $athleteSummary = [];
+    foreach ($athletes as $athlete) {
+        $name = trim((string) ($athlete['athlete_name'] ?? 'Athlete'));
+        $className = trim((string) ($athlete['class_interest'] ?? ''));
+        $ageGroup = trim((string) ($athlete['athlete_age_group'] ?? ''));
+        $athleteSummary[] = '- ' . $name . ' | ' . $ageGroup . ' | ' . $className;
+    }
+
+    $fromName = defined('WAITLIST_FROM_NAME') ? (string) WAITLIST_FROM_NAME : 'United Wrestling Club';
+    $fromEmail = defined('WAITLIST_FROM_EMAIL') ? (string) WAITLIST_FROM_EMAIL : 'noreply@united-wc.com';
+    $contactEmail = defined('WAITLIST_CONTACT_EMAIL') ? (string) WAITLIST_CONTACT_EMAIL : 'info@united-wc.com';
+    $adminEmail = defined('WAITLIST_ADMIN_EMAIL') ? (string) WAITLIST_ADMIN_EMAIL : $contactEmail;
+    $modePrefix = stripe_mode_label() === 'test' ? '[TEST] ' : '';
+
+    $headers = [
+        'From: ' . $fromName . ' <' . $fromEmail . '>',
+        'Reply-To: ' . $contactEmail,
+        'Content-Type: text/plain; charset=UTF-8',
+    ];
+
+    if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
+        $parentSubject = $modePrefix . 'UWC Waitlist Update - Class Full';
+        $parentBody = implode("\n", array_filter([
+            'Thank you for registering with United Wrestling Club.',
+            '',
+            'One or more of your selected classes are currently full: ' . $fullClassNames,
+            'Your athletes have been added to the waitlist.',
+            '',
+            'Waitlist ID: ' . ($waitlistId !== '' ? $waitlistId : '(not available)'),
+            '',
+            'Athletes:',
+            implode("\n", $athleteSummary),
+            '',
+            'We will contact you as soon as a spot opens.',
+            '',
+            'Questions? ' . $contactEmail
+                . (defined('WAITLIST_CONTACT_PHONE') && trim((string) WAITLIST_CONTACT_PHONE) !== '' ? ' | ' . WAITLIST_CONTACT_PHONE : ''),
+            '',
+            "It's Bigger Than Wrestling.",
+        ]));
+
+        if (!uwc_transport_mail($guardianEmail, $parentSubject, $parentBody, implode("\r\n", $headers))) {
+            log_class_waitlist_error('Failed parent waitlist email for ' . $waitlistId . ' to ' . $guardianEmail);
+        }
+    }
+
+    if ($adminEmail !== '' && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+        $adminSubject = $modePrefix . 'UWC Class Full Waitlist Entry' . ($guardianName !== '' ? ' - ' . $guardianName : '');
+        $adminBody = implode("\n", array_filter([
+            'A registration was waitlisted because class capacity is full.',
+            '',
+            'Waitlist ID: ' . ($waitlistId !== '' ? $waitlistId : '(not available)'),
+            'Parent/Guardian: ' . ($guardianName !== '' ? $guardianName : '(not provided)'),
+            'Email: ' . ($guardianEmail !== '' ? $guardianEmail : '(not provided)'),
+            'Phone: ' . ((string) ($waitlistRecord['phone'] ?? '(not provided)')),
+            'Full classes: ' . $fullClassNames,
+            '',
+            'Athletes:',
+            implode("\n", $athleteSummary),
+        ]));
+
+        if (!uwc_transport_mail($adminEmail, $adminSubject, $adminBody, implode("\r\n", $headers))) {
+            log_class_waitlist_error('Failed admin waitlist email for ' . $waitlistId . ' to ' . $adminEmail);
+        }
+    }
+}
+
+function log_class_waitlist_error(string $message): void
+{
+    $line = '[' . gmdate('c') . '] ' . $message . PHP_EOL;
+    @file_put_contents(STRIPE_CLASS_WAITLIST_ERROR_LOG, $line, FILE_APPEND);
 }

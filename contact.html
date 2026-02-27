@@ -161,6 +161,7 @@
             </button>
             <p class="micro">
               One click validates your registration details and sends you to Stripe checkout.
+              If a selected class is full, we will automatically place your athlete on the waitlist.
             </p>
           </div>
 
@@ -325,6 +326,9 @@
         if (status === "success") {
           notice.classList.add("is-success");
           notice.innerHTML = "<strong>Thank you.</strong> Your registration was received successfully.";
+        } else if (status === "waitlist") {
+          notice.classList.add("is-warning");
+          notice.innerHTML = "<strong>Class currently full.</strong> " + (msg || "Your athlete has been added to the waitlist. We will contact you when a spot opens.");
         } else if (status === "partial") {
           notice.classList.add("is-warning");
           notice.innerHTML = "<strong>Submitted.</strong> Your registration was received, but part of the confirmation process could not be completed.";
