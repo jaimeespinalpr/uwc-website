@@ -1011,13 +1011,13 @@ img {
 
 .coach-photo {
   display: block;
-  width: 100%;
+  width: min(100%, 228px);
   aspect-ratio: 4 / 5;
   object-fit: cover;
   object-position: center top;
   border-radius: 10px;
   border: 1px solid var(--line);
-  margin-bottom: 10px;
+  margin: 0 auto 10px;
   background: #eef2f7;
 }
 
