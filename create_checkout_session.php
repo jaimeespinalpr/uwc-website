@@ -402,7 +402,7 @@ function build_requested_class_counts(array $athletes): array
 {
     $counts = [];
     foreach ($athletes as $athlete) {
-        $className = trim((string) ($athlete['class_interest'] ?? ''));
+        $className = canonical_class_name((string) ($athlete['class_interest'] ?? ''));
         if ($className === '') {
             continue;
         }
@@ -455,7 +455,7 @@ function get_paid_class_counts_for_classes(array $knownClassNames): array
             }
 
             foreach ($athletes as $athlete) {
-                $className = trim((string) (($athlete['class_interest'] ?? '')));
+                $className = canonical_class_name((string) ($athlete['class_interest'] ?? ''));
                 if ($className === '') {
                     continue;
                 }
@@ -526,6 +526,22 @@ function find_full_classes(array $requestedClassCounts, array $paidClassCounts, 
     }
 
     return $full;
+}
+
+function canonical_class_name(string $className): string
+{
+    $className = trim($className);
+    if ($className === '') {
+        return '';
+    }
+
+    $aliases = [
+        'Elite Competition Team (14+)' => 'Elite Wrestler (Ages 14+)',
+        'Elite Competition Team (Ages 14+)' => 'Elite Wrestler (Ages 14+)',
+        'Future Champions (Ages 5-10)' => 'Future Champions (5-10)',
+    ];
+
+    return $aliases[$className] ?? $className;
 }
 
 function send_class_waitlist_emails(array $waitlistRecord, array $athletes, array $fullClasses): void

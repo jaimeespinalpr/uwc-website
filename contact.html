@@ -193,6 +193,18 @@
             </p>
           </div>
 
+          <div class="info-card-subsection spots-live-card">
+            <h3>Live class availability</h3>
+            <ul class="spots-live-list">
+              <li><span>Future Champions (5-10)</span><strong data-live-spots="future-champions">-- / 24</strong></li>
+              <li><span>Foundation (11-13 Beginner)</span><strong data-live-spots="foundation">-- / 24</strong></li>
+              <li><span>Development (11-13 Intermediate)</span><strong data-live-spots="development">-- / 24</strong></li>
+              <li><span>Advanced (11-13 Advanced)</span><strong data-live-spots="advanced-11-13">-- / 24</strong></li>
+              <li><span>Elite Wrestler (Ages 14+)</span><strong data-live-spots="elite-competition-team">-- / 24</strong></li>
+            </ul>
+            <p class="micro">Auto-updated every minute based on paid registrations.</p>
+          </div>
+
           <div class="info-card-subsection">
             <h3>Discount Rules</h3>
             <ul class="check-list compact-check-list">
@@ -258,6 +270,8 @@
         { value: "experienced", label: "Experienced" },
         { value: "competition", label: "Competition-focused" }
       ];
+      var LIVE_SPOTS_POLL_MS = 45000;
+      var liveSpotsByClass = {};
 
       var form = document.getElementById("family-registration-form");
       var formCard = document.querySelector(".form-card");
@@ -271,6 +285,8 @@
       addAthleteCard();
       syncAthleteCards();
       syncEstimate();
+      fetchClassAvailability();
+      setInterval(fetchClassAvailability, LIVE_SPOTS_POLL_MS);
 
       addAthleteBtn.addEventListener("click", function () {
         addAthleteCard();
@@ -465,7 +481,7 @@
         }
 
         options.forEach(function (item) {
-          appendOption(classSelect, item.value, item.label);
+          appendOption(classSelect, item.value, buildClassOptionLabel(item.value, item.label));
         });
 
         if (previousValue && options.some(function (item) { return item.value === previousValue; })) {
@@ -482,6 +498,58 @@
         option.value = value;
         option.textContent = label;
         select.appendChild(option);
+      }
+
+      function buildClassOptionLabel(classKey, baseLabel) {
+        var classData = liveSpotsByClass[classKey];
+        if (!classData) {
+          return baseLabel;
+        }
+        var spotsLeft = Number(classData.spots_left);
+        if (!Number.isFinite(spotsLeft)) {
+          return baseLabel;
+        }
+        if (spotsLeft <= 0) {
+          return baseLabel + " • FULL (Waitlist)";
+        }
+        return baseLabel + " • " + spotsLeft + " spots left";
+      }
+
+      function fetchClassAvailability() {
+        fetch("class-spots.php?ts=" + Date.now(), { cache: "no-store" })
+          .then(function (res) { return res.json(); })
+          .then(function (payload) {
+            if (!payload || !payload.classes) return;
+            liveSpotsByClass = payload.classes;
+            renderLiveAvailability();
+            var cards = athleteList.querySelectorAll(".athlete-card");
+            cards.forEach(function (card) {
+              updateClassOptions(card, true);
+            });
+          })
+          .catch(function () {
+            // Keep last known values on transient network issues.
+          });
+      }
+
+      function renderLiveAvailability() {
+        var nodes = document.querySelectorAll("[data-live-spots]");
+        nodes.forEach(function (node) {
+          var classKey = node.getAttribute("data-live-spots");
+          var classData = liveSpotsByClass[classKey];
+          if (!classData) return;
+
+          var spotsLeft = Number(classData.spots_left);
+          if (!Number.isFinite(spotsLeft)) return;
+
+          if (spotsLeft <= 0) {
+            node.textContent = "FULL (Waitlist)";
+            node.classList.add("is-full");
+          } else {
+            node.textContent = spotsLeft + " / 24";
+            node.classList.remove("is-full");
+          }
+        });
       }
 
       function syncEstimate() {

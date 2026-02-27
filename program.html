@@ -76,6 +76,7 @@
           <div class="age">Ages 5-10</div>
           <div class="time">Monday & Wednesday | 6:00 PM - 6:45 PM</div>
           <div class="track">Red group | Beginner-friendly youth development.</div>
+          <div class="spots-line" data-spots-line data-spots-class="future-champions">Spots left: <strong data-spots-value>--</strong> / 24</div>
         </article>
 
         <article class="schedule-card">
@@ -83,6 +84,7 @@
           <div class="age">Ages 11-13</div>
           <div class="time">Tuesday & Thursday | 6:00 PM - 6:45 PM</div>
           <div class="track">White group | Beginner (11-13).</div>
+          <div class="spots-line" data-spots-line data-spots-class="foundation">Spots left: <strong data-spots-value>--</strong> / 24</div>
         </article>
 
         <article class="schedule-card">
@@ -90,6 +92,7 @@
           <div class="age">Ages 11-13</div>
           <div class="time">Monday & Wednesday | 7:00 PM - 8:15 PM</div>
           <div class="track">White group | Intermediate (11-13).</div>
+          <div class="spots-line" data-spots-line data-spots-class="development">Spots left: <strong data-spots-value>--</strong> / 24</div>
         </article>
 
         <article class="schedule-card">
@@ -97,6 +100,7 @@
           <div class="age">Ages 11-13</div>
           <div class="time">Monday & Wednesday | 7:00 PM - 8:15 PM</div>
           <div class="track">White group | Advanced (11-13).</div>
+          <div class="spots-line" data-spots-line data-spots-class="advanced-11-13">Spots left: <strong data-spots-value>--</strong> / 24</div>
         </article>
 
         <article class="schedule-card" id="blue">
@@ -104,6 +108,7 @@
           <div class="age">Ages 14+</div>
           <div class="time">Tuesday & Thursday | 7:00 PM - 8:15 PM</div>
           <div class="track">Blue group | Advanced competition-focused wrestlers.</div>
+          <div class="spots-line" data-spots-line data-spots-class="elite-competition-team">Spots left: <strong data-spots-value>--</strong> / 24</div>
         </article>
       </div>
 
@@ -287,5 +292,43 @@
       </div>
     </footer>
   </main>
+  <script>
+    (function () {
+      var POLL_MS = 45000;
+
+      function renderSpots(classes) {
+        var nodes = document.querySelectorAll("[data-spots-class]");
+        nodes.forEach(function (node) {
+          var key = node.getAttribute("data-spots-class");
+          if (!key || !classes[key]) return;
+
+          var classData = classes[key];
+          var spotsLeft = Number(classData.spots_left);
+          node.classList.remove("is-full");
+          if (spotsLeft <= 0) {
+            node.classList.add("is-full");
+            node.innerHTML = "Class full · <strong data-spots-value>0</strong> / 24 (Waitlist)";
+          } else {
+            node.innerHTML = "Spots left: <strong data-spots-value>" + String(spotsLeft) + "</strong> / 24";
+          }
+        });
+      }
+
+      function fetchSpots() {
+        fetch("class-spots.php?ts=" + Date.now(), { cache: "no-store" })
+          .then(function (res) { return res.json(); })
+          .then(function (payload) {
+            if (!payload || !payload.classes) return;
+            renderSpots(payload.classes);
+          })
+          .catch(function () {
+            // Keep last shown values if request fails.
+          });
+      }
+
+      fetchSpots();
+      setInterval(fetchSpots, POLL_MS);
+    })();
+  </script>
 </body>
 </html>

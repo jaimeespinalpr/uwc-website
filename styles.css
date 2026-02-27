@@ -797,6 +797,35 @@ img {
   font-size: 0.9rem;
 }
 
+.spots-line {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #f8fbff;
+  color: var(--navy-900);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.spots-line strong {
+  color: var(--red-500);
+  font-weight: 800;
+}
+
+.spots-line.is-full {
+  border-color: rgba(200, 16, 46, 0.36);
+  background: #fff4f6;
+  color: #8a1730;
+}
+
+.spots-line.is-full strong {
+  color: #8a1730;
+}
+
 .level-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2646,6 +2675,41 @@ textarea:focus-visible {
   margin: 8px 0 0;
   color: var(--ink-700);
   font-size: 0.88rem;
+}
+
+.spots-live-card .micro {
+  margin-top: 8px;
+}
+
+.spots-live-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.spots-live-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f8fbff;
+  color: var(--ink-800);
+  font-size: 0.86rem;
+}
+
+.spots-live-list strong {
+  color: var(--red-500);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.spots-live-list strong.is-full {
+  color: #8a1730;
 }
 
 .payment-lock-banner {
