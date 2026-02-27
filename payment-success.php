@@ -7,6 +7,11 @@ require_once __DIR__ . '/stripe-helpers.php';
 require_once __DIR__ . '/smtp-mailer.php';
 require_once __DIR__ . '/excel-exports.php';
 
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+header('X-Robots-Tag: noindex, nofollow', true);
+
 const STRIPE_PAYMENT_SUCCESS_LOG = __DIR__ . '/data/stripe_payment_success.csv';
 const STRIPE_PAYMENT_SUCCESS_ERRORS = __DIR__ . '/data/stripe_payment_success_errors.log';
 const STRIPE_PAYMENT_EMAIL_ERRORS = __DIR__ . '/data/stripe_payment_email_errors.log';

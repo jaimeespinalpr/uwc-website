@@ -46,11 +46,17 @@ jobs:
         run: |
           set -euo pipefail
 
+          MODE="${STRIPE_MODE:-test}"
+          if [ "$MODE" = "live" ] && [ -z "${STRIPE_WEBHOOK_SECRET:-}" ]; then
+            echo "STRIPE_WEBHOOK_SECRET is required when STRIPE_MODE=live."
+            exit 1
+          fi
+
           if [ -n "${STRIPE_SECRET_KEY:-}" ]; then
             {
               echo "<?php"
               echo "declare(strict_types=1);"
-              echo "define('STRIPE_MODE', '${STRIPE_MODE:-test}');"
+              echo "define('STRIPE_MODE', '${MODE}');"
               echo "define('STRIPE_PUBLISHABLE_KEY', '${STRIPE_PUBLISHABLE_KEY:-}');"
               echo "define('STRIPE_SECRET_KEY', '${STRIPE_SECRET_KEY}');"
               echo "define('STRIPE_WEBHOOK_SECRET', '${STRIPE_WEBHOOK_SECRET:-}');"

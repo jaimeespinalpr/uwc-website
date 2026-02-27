@@ -7,6 +7,10 @@ require_once __DIR__ . '/stripe-helpers.php';
 require_once __DIR__ . '/smtp-mailer.php';
 require_once __DIR__ . '/excel-exports.php';
 
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 const REGISTRATION_BASE_PRICE = 285.00;
 const CLASS_CAPACITY_MAX = 24;
 const STRIPE_REGISTRATION_SUBMISSIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
