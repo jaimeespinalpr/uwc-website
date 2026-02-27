@@ -562,8 +562,6 @@ function send_class_waitlist_emails(array $waitlistRecord, array $athletes, arra
     $fromEmail = defined('WAITLIST_FROM_EMAIL') ? (string) WAITLIST_FROM_EMAIL : 'noreply@united-wc.com';
     $contactEmail = defined('WAITLIST_CONTACT_EMAIL') ? (string) WAITLIST_CONTACT_EMAIL : 'info@united-wc.com';
     $adminEmail = defined('WAITLIST_ADMIN_EMAIL') ? (string) WAITLIST_ADMIN_EMAIL : $contactEmail;
-    $modePrefix = stripe_mode_label() === 'test' ? '[TEST] ' : '';
-
     $headers = [
         'From: ' . $fromName . ' <' . $fromEmail . '>',
         'Reply-To: ' . $contactEmail,
@@ -571,7 +569,7 @@ function send_class_waitlist_emails(array $waitlistRecord, array $athletes, arra
     ];
 
     if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
-        $parentSubject = $modePrefix . 'UWC Waitlist Update - Class Full';
+        $parentSubject = 'UWC Waitlist Update - Class Full';
         $parentBody = implode("\n", array_filter([
             'Thank you for registering with United Wrestling Club.',
             '',
@@ -597,7 +595,7 @@ function send_class_waitlist_emails(array $waitlistRecord, array $athletes, arra
     }
 
     if ($adminEmail !== '' && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-        $adminSubject = $modePrefix . 'UWC Class Full Waitlist Entry' . ($guardianName !== '' ? ' - ' . $guardianName : '');
+        $adminSubject = 'UWC Class Full Waitlist Entry' . ($guardianName !== '' ? ' - ' . $guardianName : '');
         $adminBody = implode("\n", array_filter([
             'A registration was waitlisted because class capacity is full.',
             '',

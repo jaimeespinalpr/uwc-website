@@ -95,9 +95,6 @@ $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://un
       <span class="pill"><?php echo $isPaid ? 'Payment Received' : 'Checkout Status'; ?></span>
       <h1 id="payment-success-title"><?php echo $isPaid ? 'Thank you. Your payment was received.' : 'We could not confirm payment yet.'; ?></h1>
       <p><?php echo htmlspecialchars($statusText, ENT_QUOTES, 'UTF-8'); ?></p>
-      <?php if (stripe_mode_label() === 'test'): ?>
-        <div class="badge-line"><span class="badge-soft">Stripe test mode</span></div>
-      <?php endif; ?>
       <?php if ($isPaid && $confirmationEmailStatus === 'sent'): ?>
         <div class="badge-line"><span class="badge-soft">Confirmation email sent to <?php echo e_out($guardianEmail !== '' ? $guardianEmail : 'the payer'); ?></span></div>
       <?php elseif ($isPaid && $confirmationEmailStatus === 'already-sent'): ?>
@@ -291,12 +288,11 @@ function send_payment_confirmation_emails_if_needed(array $session, string $subm
     $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://united-wc.com'), '/');
     $logoUrl = defined('WAITLIST_LOGO_URL') ? WAITLIST_LOGO_URL : $siteUrl . '/assets/uwc-logo.png';
 
-    $modePrefix = stripe_mode_label() === 'test' ? '[TEST] ' : '';
     $parentSent = true;
     $clubSent = true;
 
     if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
-        $parentSubject = $modePrefix . 'UWC Payment Confirmation - Spring Session 2026';
+        $parentSubject = 'UWC Payment Confirmation - Spring Session 2026';
         $parentPlain = implode("\n", array_filter([
             'Thank you. Your United Wrestling Club payment was received.',
             '',
@@ -331,7 +327,7 @@ function send_payment_confirmation_emails_if_needed(array $session, string $subm
         );
     }
 
-    $clubSubject = $modePrefix . 'UWC Registration Payment Received' . ($guardianName !== '' ? ' - ' . $guardianName : '');
+    $clubSubject = 'UWC Registration Payment Received' . ($guardianName !== '' ? ' - ' . $guardianName : '');
     $clubPlain = implode("\n", array_filter([
         'Stripe checkout payment completed.',
         '',
@@ -342,7 +338,6 @@ function send_payment_confirmation_emails_if_needed(array $session, string $subm
         'Submission ID: ' . ($submissionId !== '' ? $submissionId : ((string) ($session['client_reference_id'] ?? ''))),
         'Stripe Session ID: ' . $sessionId,
         'Payment Intent ID: ' . ($paymentIntentId !== '' ? $paymentIntentId : '(not available)'),
-        'Stripe Mode: ' . stripe_mode_label(),
     ]));
 
     $clubHtml = build_club_payment_notification_html(
@@ -542,7 +537,6 @@ function build_club_payment_notification_html(
     $submissionIdEsc = e_out($submissionId !== '' ? $submissionId : '(not available)');
     $sessionIdEsc = e_out($sessionId);
     $paymentIntentIdEsc = e_out($paymentIntentId !== '' ? $paymentIntentId : '(not available)');
-    $modeEsc = e_out(stripe_mode_label());
 
     return <<<HTML
 <!doctype html>
@@ -568,7 +562,6 @@ function build_club_payment_notification_html(
                   <tr><td style="padding:0 0 8px 0; color:#64748b; font-size:13px;">Submission ID</td><td style="padding:0 0 8px 0; color:#0f172a; font-size:13px; font-family:Menlo, Monaco, Consolas, monospace;">{$submissionIdEsc}</td></tr>
                   <tr><td style="padding:0 0 8px 0; color:#64748b; font-size:13px;">Stripe Session ID</td><td style="padding:0 0 8px 0; color:#0f172a; font-size:13px; font-family:Menlo, Monaco, Consolas, monospace;">{$sessionIdEsc}</td></tr>
                   <tr><td style="padding:0 0 8px 0; color:#64748b; font-size:13px;">Payment Intent ID</td><td style="padding:0 0 8px 0; color:#0f172a; font-size:13px; font-family:Menlo, Monaco, Consolas, monospace;">{$paymentIntentIdEsc}</td></tr>
-                  <tr><td style="padding:0; color:#64748b; font-size:13px;">Stripe Mode</td><td style="padding:0; color:#0f172a; font-size:13px;">{$modeEsc}</td></tr>
                 </table>
               </td>
             </tr>

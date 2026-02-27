@@ -243,12 +243,11 @@ function send_payment_confirmation_emails_if_needed_webhook(array $session, stri
     $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://united-wc.com'), '/');
     $logoUrl = defined('WAITLIST_LOGO_URL') ? WAITLIST_LOGO_URL : $siteUrl . '/assets/uwc-logo.png';
 
-    $modePrefix = stripe_mode_label() === 'test' ? '[TEST] ' : '';
     $parentSent = true;
     $clubSent = true;
 
     if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
-        $parentSubject = $modePrefix . 'UWC Payment Confirmation - Spring Session 2026';
+        $parentSubject = 'UWC Payment Confirmation - Spring Session 2026';
         $parentPlain = implode("\n", array_filter([
             'Thank you. Your United Wrestling Club payment was received.',
             '',
@@ -283,7 +282,7 @@ function send_payment_confirmation_emails_if_needed_webhook(array $session, stri
         );
     }
 
-    $clubSubject = $modePrefix . 'UWC Registration Payment Received' . ($guardianName !== '' ? ' - ' . $guardianName : '');
+    $clubSubject = 'UWC Registration Payment Received' . ($guardianName !== '' ? ' - ' . $guardianName : '');
     $clubPlain = implode("\n", array_filter([
         'Stripe checkout payment completed (webhook).',
         '',
@@ -294,7 +293,6 @@ function send_payment_confirmation_emails_if_needed_webhook(array $session, stri
         'Submission ID: ' . ($submissionId !== '' ? $submissionId : ((string) ($session['client_reference_id'] ?? ''))),
         'Stripe Session ID: ' . $sessionId,
         'Payment Intent ID: ' . ($paymentIntentId !== '' ? $paymentIntentId : '(not available)'),
-        'Stripe Mode: ' . stripe_mode_label(),
     ]));
 
     $clubHtml = build_club_payment_notification_html_webhook(
@@ -450,7 +448,6 @@ function build_club_payment_notification_html_webhook(string $guardianName, stri
     $submissionIdEsc = e_out_webhook($submissionId !== '' ? $submissionId : '(not available)');
     $sessionIdEsc = e_out_webhook($sessionId);
     $paymentIntentIdEsc = e_out_webhook($paymentIntentId !== '' ? $paymentIntentId : '(not available)');
-    $modeEsc = e_out_webhook(stripe_mode_label());
 
     return <<<HTML
 <!doctype html><html lang="en"><body style="margin:0; padding:0; background:#eef2f7; font-family:Arial, Helvetica, sans-serif; color:#0f172a;">
@@ -465,7 +462,6 @@ function build_club_payment_notification_html_webhook(string $guardianName, stri
 <tr><td style="padding:0 0 8px 0; color:#64748b; font-size:13px;">Submission ID</td><td style="padding:0 0 8px 0; color:#0f172a; font-size:13px; font-family:Menlo, Monaco, Consolas, monospace;">{$submissionIdEsc}</td></tr>
 <tr><td style="padding:0 0 8px 0; color:#64748b; font-size:13px;">Stripe Session ID</td><td style="padding:0 0 8px 0; color:#0f172a; font-size:13px; font-family:Menlo, Monaco, Consolas, monospace;">{$sessionIdEsc}</td></tr>
 <tr><td style="padding:0 0 8px 0; color:#64748b; font-size:13px;">Payment Intent ID</td><td style="padding:0 0 8px 0; color:#0f172a; font-size:13px; font-family:Menlo, Monaco, Consolas, monospace;">{$paymentIntentIdEsc}</td></tr>
-<tr><td style="padding:0; color:#64748b; font-size:13px;">Stripe Mode</td><td style="padding:0; color:#0f172a; font-size:13px;">{$modeEsc}</td></tr>
 </table></td></tr></table></td></tr></table></body></html>
 HTML;
 }
