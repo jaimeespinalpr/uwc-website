@@ -17,10 +17,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
 
 $classesByKey = [
     'future-champions' => 'Future Champions (5-10)',
-    'foundation' => 'Foundation (11-13 Beginner)',
-    'development' => 'Development (11-13 Intermediate)',
-    'advanced-11-13' => 'Advanced (11-13 Advanced)',
-    'elite-competition-team' => 'Elite Wrestler (Ages 14+)',
+    'foundation' => 'Rising Competitors - Foundation (Ages 11-13)',
+    'development' => 'Rising Competitors - Development (Ages 11-13)',
+    'advanced-11-13' => 'Rising Competitors - Advanced (Ages 11-13)',
+    'elite-competition-team' => 'Elite Wrestlers (Ages 14+)',
 ];
 
 $paidSessionIds = class_spots_paid_session_ids();
@@ -195,8 +195,12 @@ function class_spots_canonical_name(string $className): string
     }
 
     $aliases = [
-        'Elite Competition Team (14+)' => 'Elite Wrestler (Ages 14+)',
-        'Elite Competition Team (Ages 14+)' => 'Elite Wrestler (Ages 14+)',
+        'Foundation (11-13 Beginner)' => 'Rising Competitors - Foundation (Ages 11-13)',
+        'Development (11-13 Intermediate)' => 'Rising Competitors - Development (Ages 11-13)',
+        'Advanced (11-13 Advanced)' => 'Rising Competitors - Advanced (Ages 11-13)',
+        'Elite Competition Team (14+)' => 'Elite Wrestlers (Ages 14+)',
+        'Elite Competition Team (Ages 14+)' => 'Elite Wrestlers (Ages 14+)',
+        'Elite Wrestler (Ages 14+)' => 'Elite Wrestlers (Ages 14+)',
         'Future Champions (Ages 5-10)' => 'Future Champions (5-10)',
     ];
 
