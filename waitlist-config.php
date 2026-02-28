@@ -15,6 +15,10 @@ define('WAITLIST_ADMIN_EMAIL', 'register@united-wc.com');  // Registration/waitl
 define('WAITLIST_PAYMENT_EMAIL', 'sales@united-wc.com');   // Payment notifications
 define('WAITLIST_CONTACT_EMAIL', 'info@united-wc.com');    // Shown to families in confirmation email
 define('WAITLIST_EXCEL_EXPORT_EMAIL', 'gmunch@united-wc.com'); // Excel/CSV export update notifications
+define('WAITLIST_EXCEL_EXPORT_EMAILS', [
+    'gmunch@united-wc.com',
+    'jaimeespinalpr@gmail.com',
+]); // Multi-recipient Excel/CSV export update notifications
 define('WAITLIST_CONTACT_NAME', 'Gary Munch');
 define('WAITLIST_CONTACT_TITLE', 'Director of Operations and Founder');
 define('WAITLIST_CONTACT_PHONE', '302-528-2180');

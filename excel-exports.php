@@ -331,19 +331,13 @@ if (!function_exists('uwc_excel_export_registration')) {
             return false;
         }
 
-        $to = '';
-        if (defined('WAITLIST_EXCEL_EXPORT_EMAIL')) {
-            $to = trim((string) WAITLIST_EXCEL_EXPORT_EMAIL);
-        }
-        if ($to === '' && defined('WAITLIST_ADMIN_EMAIL')) {
-            $to = trim((string) WAITLIST_ADMIN_EMAIL);
-        }
-        if ($to === '') {
+        $recipients = uwc_excel_export_recipients();
+        if (empty($recipients)) {
             return false;
         }
 
         $fromName = defined('WAITLIST_FROM_NAME') ? trim((string) WAITLIST_FROM_NAME) : 'United Wrestling Club';
-        $fromEmail = defined('WAITLIST_FROM_EMAIL') ? trim((string) WAITLIST_FROM_EMAIL) : $to;
+        $fromEmail = defined('WAITLIST_FROM_EMAIL') ? trim((string) WAITLIST_FROM_EMAIL) : $recipients[0];
         $replyTo = defined('WAITLIST_CONTACT_EMAIL') ? trim((string) WAITLIST_CONTACT_EMAIL) : '';
 
         try {
@@ -392,7 +386,20 @@ if (!function_exists('uwc_excel_export_registration')) {
         $body[] = '--' . $boundary . '--';
         $body[] = '';
 
-        return uwc_transport_mail($to, $subject, implode("\r\n", $body), implode("\r\n", $headers));
+        $payload = implode("\r\n", $body);
+        $headerString = implode("\r\n", $headers);
+        $allSent = true;
+
+        foreach ($recipients as $recipient) {
+            if (!uwc_transport_mail($recipient, $subject, $payload, $headerString)) {
+                $allSent = false;
+                uwc_excel_log_email_error(
+                    'Excel export email send failed to ' . $recipient . ' | subject: ' . $subject
+                );
+            }
+        }
+
+        return $allSent;
     }
 
     function uwc_excel_bootstrap_mailer(): bool
@@ -420,6 +427,47 @@ if (!function_exists('uwc_excel_export_registration')) {
         }
 
         return $safeName . ' <' . $safeEmail . '>';
+    }
+
+    function uwc_excel_export_recipients(): array
+    {
+        $raw = [];
+
+        if (defined('WAITLIST_EXCEL_EXPORT_EMAILS')) {
+            $configValue = WAITLIST_EXCEL_EXPORT_EMAILS;
+            if (is_array($configValue)) {
+                foreach ($configValue as $item) {
+                    $raw[] = (string) $item;
+                }
+            } else {
+                $raw[] = (string) $configValue;
+            }
+        }
+
+        if (defined('WAITLIST_EXCEL_EXPORT_EMAIL')) {
+            $raw[] = (string) WAITLIST_EXCEL_EXPORT_EMAIL;
+        }
+
+        if (empty($raw) && defined('WAITLIST_ADMIN_EMAIL')) {
+            $raw[] = (string) WAITLIST_ADMIN_EMAIL;
+        }
+
+        $emails = [];
+        foreach ($raw as $value) {
+            foreach (preg_split('/[;,]+/', $value) as $part) {
+                $candidate = trim((string) $part);
+                if ($candidate === '') {
+                    continue;
+                }
+                $candidateLower = strtolower($candidate);
+                if (!filter_var($candidateLower, FILTER_VALIDATE_EMAIL)) {
+                    continue;
+                }
+                $emails[$candidateLower] = $candidateLower;
+            }
+        }
+
+        return array_values($emails);
     }
 
     function uwc_excel_log_email_error(string $message): void
