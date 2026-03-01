@@ -353,6 +353,22 @@ img {
   box-shadow: var(--shadow-sm);
 }
 
+.meta-chip-link {
+  text-decoration: none;
+  transition: transform 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.meta-chip-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(29, 79, 147, 0.28);
+  color: var(--navy-900);
+}
+
+.meta-chip-link:focus-visible {
+  outline: 3px solid rgba(29, 79, 147, 0.24);
+  outline-offset: 2px;
+}
+
 .hero-actions {
   margin-top: 18px;
   display: flex;
@@ -979,6 +995,44 @@ img {
   color: var(--ink-700);
 }
 
+.location-actions {
+  margin-top: 14px;
+}
+
+.location-map-wrap {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  background: var(--white);
+}
+
+.location-map-frame {
+  display: block;
+  width: 100%;
+  min-height: 420px;
+  border: 0;
+}
+
+.location-card p {
+  margin-bottom: 12px;
+}
+
+.location-image-placeholder {
+  min-height: 190px;
+  border-radius: 14px;
+  border: 1px dashed rgba(29, 79, 147, 0.36);
+  background:
+    linear-gradient(180deg, rgba(18, 52, 98, 0.04), rgba(18, 52, 98, 0.02));
+  color: var(--ink-500);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 14px;
+}
+
 .coach-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1574,6 +1628,10 @@ textarea:focus-visible {
   .brand-copy span {
     display: none;
   }
+
+  .location-map-frame {
+    min-height: 300px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1948,6 +2006,11 @@ body::before {
   font-size: 0.8rem;
   letter-spacing: 0.03em;
   padding: 8px 10px;
+}
+
+.meta-chip-link:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  color: var(--white);
 }
 
 .hero-side-card {
