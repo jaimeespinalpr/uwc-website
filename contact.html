@@ -205,11 +205,11 @@
           <div class="info-card-subsection spots-live-card">
             <h3>Live class availability</h3>
             <ul class="spots-live-list">
-              <li><span>Future Champions (Ages 5-10)</span><strong data-live-spots="future-champions">-- / 24</strong></li>
-              <li><span>Rising Competitors - Foundation (Ages 11-13)</span><strong data-live-spots="foundation">-- / 24</strong></li>
-              <li><span>Rising Competitors - Development (Ages 11-13)</span><strong data-live-spots="development">-- / 24</strong></li>
-              <li><span>Rising Competitors - Advanced (Ages 11-13)</span><strong data-live-spots="advanced-11-13">-- / 24</strong></li>
-              <li><span>Elite Wrestlers (Ages 14+)</span><strong data-live-spots="elite-competition-team">-- / 24</strong></li>
+              <li><span>Future Champions (Ages 5-10)</span><strong data-live-spots="future-champions">Open</strong></li>
+              <li><span>Rising Competitors - Foundation (Ages 11-13)</span><strong data-live-spots="foundation">Open</strong></li>
+              <li><span>Rising Competitors - Development (Ages 11-13)</span><strong data-live-spots="development">Open</strong></li>
+              <li><span>Rising Competitors - Advanced (Ages 11-13)</span><strong data-live-spots="advanced-11-13">Open</strong></li>
+              <li><span>Elite Wrestlers (Ages 14+)</span><strong data-live-spots="elite-competition-team">Open</strong></li>
             </ul>
             <p class="micro">Auto-updated every 45 seconds based on paid registrations.</p>
           </div>
@@ -537,7 +537,10 @@
         if (spotsLeft <= 0) {
           return baseLabel + " • FULL (Waitlist)";
         }
-        return baseLabel + " • " + spotsLeft + " spots left";
+        if (spotsLeft <= 5) {
+          return baseLabel + " • ONLY " + spotsLeft + " LEFT";
+        }
+        return baseLabel;
       }
 
       function fetchClassAvailability() {
@@ -567,12 +570,15 @@
           var spotsLeft = Number(classData.spots_left);
           if (!Number.isFinite(spotsLeft)) return;
 
+          node.classList.remove("is-full", "is-low");
           if (spotsLeft <= 0) {
             node.textContent = "FULL (Waitlist)";
             node.classList.add("is-full");
+          } else if (spotsLeft <= 5) {
+            node.textContent = "Only " + String(spotsLeft) + " left";
+            node.classList.add("is-low");
           } else {
-            node.textContent = spotsLeft + " / 24";
-            node.classList.remove("is-full");
+            node.textContent = "Open";
           }
         });
       }

@@ -76,7 +76,7 @@
           <div class="age">Ages 5-10</div>
           <div class="time">Monday & Wednesday | 6:00 PM - 6:45 PM</div>
           <div class="track">Red group | Beginner-friendly youth development.</div>
-          <div class="spots-line" data-spots-line data-spots-class="future-champions">Spots left: <strong data-spots-value>--</strong> / 24</div>
+          <div class="spots-line" data-spots-line data-spots-class="future-champions" aria-live="polite" hidden></div>
         </article>
 
         <article class="schedule-card">
@@ -84,7 +84,7 @@
           <div class="age">Ages 11-13</div>
           <div class="time">Tuesday & Thursday | 6:00 PM - 6:45 PM</div>
           <div class="track">White group | Beginner (11-13).</div>
-          <div class="spots-line" data-spots-line data-spots-class="foundation">Spots left: <strong data-spots-value>--</strong> / 24</div>
+          <div class="spots-line" data-spots-line data-spots-class="foundation" aria-live="polite" hidden></div>
         </article>
 
         <article class="schedule-card">
@@ -92,7 +92,7 @@
           <div class="age">Ages 11-13</div>
           <div class="time">Monday & Wednesday | 7:00 PM - 8:15 PM</div>
           <div class="track">White group | Intermediate (11-13).</div>
-          <div class="spots-line" data-spots-line data-spots-class="development">Spots left: <strong data-spots-value>--</strong> / 24</div>
+          <div class="spots-line" data-spots-line data-spots-class="development" aria-live="polite" hidden></div>
         </article>
 
         <article class="schedule-card">
@@ -100,7 +100,7 @@
           <div class="age">Ages 11-13</div>
           <div class="time">Monday & Wednesday | 7:00 PM - 8:15 PM</div>
           <div class="track">White group | Advanced (11-13).</div>
-          <div class="spots-line" data-spots-line data-spots-class="advanced-11-13">Spots left: <strong data-spots-value>--</strong> / 24</div>
+          <div class="spots-line" data-spots-line data-spots-class="advanced-11-13" aria-live="polite" hidden></div>
         </article>
 
         <article class="schedule-card" id="blue">
@@ -108,7 +108,7 @@
           <div class="age">Ages 14+</div>
           <div class="time">Tuesday & Thursday | 7:00 PM - 8:15 PM</div>
           <div class="track">Blue group | High-performance competition development.</div>
-          <div class="spots-line" data-spots-line data-spots-class="elite-competition-team">Spots left: <strong data-spots-value>--</strong> / 24</div>
+          <div class="spots-line" data-spots-line data-spots-class="elite-competition-team" aria-live="polite" hidden></div>
         </article>
       </div>
 
@@ -304,12 +304,18 @@
 
           var classData = classes[key];
           var spotsLeft = Number(classData.spots_left);
-          node.classList.remove("is-full");
+          node.classList.remove("is-full", "is-low");
           if (spotsLeft <= 0) {
+            node.hidden = false;
             node.classList.add("is-full");
-            node.innerHTML = "Class full · <strong data-spots-value>0</strong> / 24 (Waitlist)";
+            node.textContent = "Class full - Waitlist";
+          } else if (spotsLeft <= 5) {
+            node.hidden = false;
+            node.classList.add("is-low");
+            node.textContent = "Alert: Only " + String(spotsLeft) + " spots left";
           } else {
-            node.innerHTML = "Spots left: <strong data-spots-value>" + String(spotsLeft) + "</strong> / 24";
+            node.hidden = true;
+            node.textContent = "";
           }
         });
       }

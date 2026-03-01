@@ -816,6 +816,12 @@ img {
   font-weight: 800;
 }
 
+.spots-line.is-low {
+  border-color: rgba(200, 16, 46, 0.36);
+  background: #fff4f6;
+  color: #8a1730;
+}
+
 .spots-line.is-full {
   border-color: rgba(200, 16, 46, 0.36);
   background: #fff4f6;
@@ -2726,9 +2732,13 @@ textarea:focus-visible {
 }
 
 .spots-live-list strong {
-  color: var(--red-500);
+  color: var(--ink-700);
   font-size: 0.84rem;
   font-weight: 800;
+}
+
+.spots-live-list strong.is-low {
+  color: #b91c1c;
 }
 
 .spots-live-list strong.is-full {
