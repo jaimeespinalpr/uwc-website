@@ -62,7 +62,7 @@ $ageLabelMap = [
 ];
 
 $allowedClasses = [
-    'future-champions' => 'Future Champions (5-10)',
+    'future-champions' => 'Future Champions (Ages 5-10)',
     'foundation' => 'Rising Competitors - Foundation (Ages 11-13)',
     'development' => 'Rising Competitors - Development (Ages 11-13)',
     'advanced-11-13' => 'Rising Competitors - Advanced (Ages 11-13)',
@@ -565,7 +565,7 @@ function canonical_class_name(string $className): string
         'Elite Competition Team (14+)' => 'Elite Wrestlers (Ages 14+)',
         'Elite Competition Team (Ages 14+)' => 'Elite Wrestlers (Ages 14+)',
         'Elite Wrestler (Ages 14+)' => 'Elite Wrestlers (Ages 14+)',
-        'Future Champions (Ages 5-10)' => 'Future Champions (5-10)',
+        'Future Champions (5-10)' => 'Future Champions (Ages 5-10)',
     ];
 
     return $aliases[$className] ?? $className;

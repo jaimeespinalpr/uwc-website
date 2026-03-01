@@ -49,7 +49,7 @@ $ageLabelMap = [
 ];
 
 $allowedClasses = [
-    'future-champions' => 'Future Champions (5-10)',
+    'future-champions' => 'Future Champions (Ages 5-10)',
     'foundation' => 'Foundation (11-13 Beginner)',
     'development' => 'Development (11-13 Intermediate)',
     'advanced-11-13' => 'Advanced (11-13 Advanced)',
