@@ -254,6 +254,8 @@
   <script>
     (function () {
       var BASE_PRICE = 285;
+      var PROMO_COUPON_CODE = "uwcultrateam";
+      var PROMO_COUPON_DISCOUNT = 142.50; // 50% off one athlete only
       var AGE_LABELS = {
         "5-10": "Ages 5-10",
         "11-13": "Ages 11-13",
@@ -642,10 +644,10 @@
         // Apply coupon (client-side hint only). Server validates and applies authoritative discount.
         var couponCode = couponInput ? (couponInput.value || "").trim() : "";
         var couponDiscount = 0;
-        if (couponCode && couponCode.toLowerCase() === 'uwcultrateam') {
-          couponDiscount = roundMoney(finalTotal * 0.5);
+        if (couponCode && couponCode.toLowerCase() === PROMO_COUPON_CODE) {
+          couponDiscount = roundMoney(Math.min(PROMO_COUPON_DISCOUNT, finalTotal));
           finalTotal = roundMoney(finalTotal - couponDiscount);
-          if (couponFeedback) couponFeedback.textContent = 'Coupon applied: UWCULTRATEAM — 50% off';
+          if (couponFeedback) couponFeedback.textContent = "Coupon applied: UWCULTRATEAM - $142.50 off (one athlete)";
         } else {
           if (couponFeedback) couponFeedback.textContent = '';
         }

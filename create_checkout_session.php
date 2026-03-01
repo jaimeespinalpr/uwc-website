@@ -12,6 +12,8 @@ header('Pragma: no-cache');
 header('Expires: 0');
 
 const REGISTRATION_BASE_PRICE = 285.00;
+const REGISTRATION_PROMO_COUPON_CODE = 'UWCULTRATEAM';
+const REGISTRATION_PROMO_COUPON_DISCOUNT = 142.50; // 50% off one athlete only
 const CLASS_CAPACITY_MAX = 24;
 const STRIPE_REGISTRATION_SUBMISSIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
 const STRIPE_REGISTRATION_ERROR_LOG = __DIR__ . '/data/stripe_registration_errors.log';
@@ -153,13 +155,13 @@ $baseSubtotal = normalize_money($baseSubtotal);
 $discountTotal = normalize_money($discountTotal);
 $estimatedTotal = normalize_money($estimatedTotal);
 
-// Coupon handling: server-side authoritative check for UWCULTRATEAM (50% off)
+// Coupon handling: server-side authoritative check (50% off one athlete only).
 $couponCode = clean_text((string) ($_POST['coupon_code'] ?? ''));
 $couponApplied = false;
 $couponDiscountAmount = 0.0;
-if ($couponCode !== '' && strcasecmp($couponCode, 'UWCULTRATEAM') === 0) {
+if ($couponCode !== '' && strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) === 0) {
     $couponApplied = true;
-    $couponDiscountAmount = normalize_money($estimatedTotal * 0.5);
+    $couponDiscountAmount = normalize_money(min(REGISTRATION_PROMO_COUPON_DISCOUNT, $estimatedTotal));
     $discountTotal = normalize_money($discountTotal + $couponDiscountAmount);
     $estimatedTotal = normalize_money($estimatedTotal - $couponDiscountAmount);
 }
