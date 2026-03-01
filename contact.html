@@ -543,12 +543,39 @@
         return baseLabel;
       }
 
+      function getPreviewEliteSpots() {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          var raw = params.get("preview_elite_spots");
+          if (raw === null || raw === "") return null;
+          var value = Number(raw);
+          if (!Number.isFinite(value)) return null;
+          return Math.max(0, Math.floor(value));
+        } catch (_error) {
+          return null;
+        }
+      }
+
+      function applyPreviewOverrides(classes) {
+        var previewEliteSpots = getPreviewEliteSpots();
+        if (previewEliteSpots === null || !classes || !classes["elite-competition-team"]) {
+          return classes;
+        }
+
+        var cloned = Object.assign({}, classes);
+        var eliteClass = Object.assign({}, cloned["elite-competition-team"]);
+        eliteClass.spots_left = previewEliteSpots;
+        eliteClass.is_full = previewEliteSpots <= 0;
+        cloned["elite-competition-team"] = eliteClass;
+        return cloned;
+      }
+
       function fetchClassAvailability() {
         fetch("class-spots.php?ts=" + Date.now(), { cache: "no-store" })
           .then(function (res) { return res.json(); })
           .then(function (payload) {
             if (!payload || !payload.classes) return;
-            liveSpotsByClass = payload.classes;
+            liveSpotsByClass = applyPreviewOverrides(payload.classes);
             renderLiveAvailability();
             var cards = athleteList.querySelectorAll(".athlete-card");
             cards.forEach(function (card) {
