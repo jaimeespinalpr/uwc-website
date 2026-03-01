@@ -148,7 +148,7 @@
         </div>
       </div>
 
-      <p class="coach-hint">Tap a coach name to view bio and results.</p>
+      <p class="coach-hint">Tap a coach card, photo, or + icon to view bio and results.</p>
 
       <div class="coach-featured-grid">
         <article class="coach-card coach-card-featured">
@@ -226,6 +226,7 @@
           </details>
         </article>
         <article class="coach-card">
+          <div class="coach-photo coach-photo-placeholder" aria-hidden="true">UWC Coach</div>
           <details class="coach-details">
             <summary class="coach-summary">
               <span class="coach-summary-text">
@@ -248,6 +249,7 @@
           </details>
         </article>
         <article class="coach-card">
+          <div class="coach-photo coach-photo-placeholder" aria-hidden="true">UWC Coach</div>
           <details class="coach-details">
             <summary class="coach-summary">
               <span class="coach-summary-text">
@@ -271,6 +273,7 @@
           </details>
         </article>
         <article class="coach-card">
+          <div class="coach-photo coach-photo-placeholder" aria-hidden="true">UWC Coach</div>
           <details class="coach-details">
             <summary class="coach-summary">
               <span class="coach-summary-text">
@@ -378,5 +381,32 @@
       </div>
     </footer>
   </main>
+  <script>
+    (function () {
+      var coachCards = document.querySelectorAll(".coach-card");
+      coachCards.forEach(function (card) {
+        var details = card.querySelector(".coach-details");
+        var summary = card.querySelector(".coach-summary");
+        if (!details || !summary) return;
+
+        var photo = card.querySelector(".coach-photo");
+        if (photo) {
+          photo.addEventListener("click", function (event) {
+            event.preventDefault();
+            details.open = !details.open;
+          });
+        }
+
+        card.addEventListener("click", function (event) {
+          var target = event.target;
+          if (!(target instanceof Element)) return;
+          if (target.closest(".coach-summary") || target.closest(".coach-photo")) return;
+          if (!details.open) {
+            details.open = true;
+          }
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

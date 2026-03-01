@@ -977,6 +977,7 @@ img {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  align-items: stretch;
 }
 
 .coach-featured-grid {
@@ -984,6 +985,7 @@ img {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 12px;
+  align-items: stretch;
 }
 
 .coach-grid-label {
@@ -1006,6 +1008,10 @@ img {
   background: var(--white);
   box-shadow: var(--shadow-sm);
   padding: 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 430px;
+  height: 100%;
 }
 
 .coach-card-featured {
@@ -1014,6 +1020,9 @@ img {
 
 .coach-details {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 .coach-summary {
@@ -1023,6 +1032,7 @@ img {
   gap: 10px;
   cursor: pointer;
   list-style: none;
+  min-height: 54px;
 }
 
 .coach-summary::-webkit-details-marker {
@@ -1048,6 +1058,19 @@ img {
   border: 1px solid var(--line);
   margin: 0 auto 10px;
   background: #eef2f7;
+}
+
+.coach-photo-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--ink-500);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-style: dashed;
+  background:
+    linear-gradient(180deg, rgba(18, 52, 98, 0.05), rgba(18, 52, 98, 0.02));
 }
 
 .coach-photo-jane {
