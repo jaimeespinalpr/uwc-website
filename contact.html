@@ -138,7 +138,7 @@
           <label class="coupon-entry">
             Coupon code (optional)
             <div class="coupon-row">
-              <input type="text" id="coupon-code-input" name="coupon_code" placeholder="Enter coupon code (e.g. UWCULTRATEAM)" />
+              <input type="text" id="coupon-code-input" name="coupon_code" placeholder="Enter coupon code (e.g. SPRING-DEMO)" />
               <button type="button" id="apply-coupon-btn" class="btn btn-sm btn-secondary">Apply</button>
             </div>
             <div id="coupon-feedback" class="micro"></div>
@@ -647,7 +647,7 @@
         if (couponCode && couponCode.toLowerCase() === PROMO_COUPON_CODE) {
           couponDiscount = roundMoney(Math.min(PROMO_COUPON_DISCOUNT, finalTotal));
           finalTotal = roundMoney(finalTotal - couponDiscount);
-          if (couponFeedback) couponFeedback.textContent = "Coupon applied: UWCULTRATEAM - $142.50 off (one athlete)";
+          if (couponFeedback) couponFeedback.textContent = "Coupon applied - $142.50 off (one athlete)";
         } else {
           if (couponFeedback) couponFeedback.textContent = '';
         }
