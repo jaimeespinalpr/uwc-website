@@ -153,6 +153,17 @@ $baseSubtotal = normalize_money($baseSubtotal);
 $discountTotal = normalize_money($discountTotal);
 $estimatedTotal = normalize_money($estimatedTotal);
 
+// Coupon handling: server-side authoritative check for UWCULTRATEAM (50% off)
+$couponCode = clean_text((string) ($_POST['coupon_code'] ?? ''));
+$couponApplied = false;
+$couponDiscountAmount = 0.0;
+if ($couponCode !== '' && strcasecmp($couponCode, 'UWCULTRATEAM') === 0) {
+    $couponApplied = true;
+    $couponDiscountAmount = normalize_money($estimatedTotal * 0.5);
+    $discountTotal = normalize_money($discountTotal + $couponDiscountAmount);
+    $estimatedTotal = normalize_money($estimatedTotal - $couponDiscountAmount);
+}
+
 // Capacity guard: if any selected class is full, skip checkout and place this submission on waitlist.
 $requestedClassCounts = build_requested_class_counts($athletes);
 $paidClassCounts = get_paid_class_counts_for_classes(array_values($allowedClasses));
@@ -217,6 +228,9 @@ $checkoutParams = [
     'metadata[submission_id]' => $submissionId,
     'metadata[guardian_name]' => substr($guardianName, 0, 500),
     'metadata[guardian_email]' => substr($email, 0, 500),
+    'metadata[coupon_code]' => substr($couponCode, 0, 100),
+    'metadata[coupon_applied]' => $couponApplied ? 'yes' : 'no',
+    'metadata[coupon_discount]' => number_format($couponDiscountAmount, 2, '.', ''),
     'metadata[athlete_count]' => (string) $athleteCount,
     'metadata[source]' => $submissionSource !== '' ? $submissionSource : 'stripe-checkout-registration',
     'payment_intent_data[metadata][submission_id]' => $submissionId,
@@ -276,6 +290,9 @@ $submission = [
     'notes' => $notes,
     'ip_address' => (string) ($_SERVER['REMOTE_ADDR'] ?? ''),
     'user_agent' => (string) ($_SERVER['HTTP_USER_AGENT'] ?? ''),
+    'coupon_code' => $couponCode,
+    'coupon_applied' => $couponApplied ? 'yes' : 'no',
+    'coupon_discount' => number_format($couponDiscountAmount, 2, '.', ''),
 ];
 
 if (!save_submission_csv(STRIPE_REGISTRATION_SUBMISSIONS_CSV, $submission)) {
