@@ -37,7 +37,7 @@ $allowedClasses = [
     'future-champions' => 'Future Champions (Ages 5-10)',
     'foundation' => 'Foundation (11-13 Beginner)',
     'development' => 'Development (11-13 Intermediate)',
-    'advanced-11-13' => 'Advanced (11-13 Advanced)',
+    'advanced-11-13' => 'Advanced (12-16 Advanced)',
     'elite-competition-team' => 'Elite Competition Team (14+)',
 ];
 $allowedClassesByAge = [
