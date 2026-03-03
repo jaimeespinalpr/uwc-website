@@ -22,6 +22,7 @@ $phone = clean_phone((string) ($_POST['phone'] ?? ''));
 $preferredContactMethod = clean_text((string) ($_POST['preferred_contact_method'] ?? ''));
 $notes = clean_text((string) ($_POST['notes'] ?? ''));
 $submissionSource = clean_text((string) ($_POST['submission_source'] ?? 'registration-application'));
+$confirmUsaMembership = clean_text((string) ($_POST['confirm_usaw_membership'] ?? ''));
 $confirmEnrollmentClosed = clean_text((string) ($_POST['confirm_enrollment_closed'] ?? ''));
 $confirmInfoAccurate = clean_text((string) ($_POST['confirm_info_accurate'] ?? ''));
 
@@ -33,7 +34,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     redirect_with_status('error', 'Please enter a valid email address.');
 }
 
-if ($confirmEnrollmentClosed !== 'yes' || $confirmInfoAccurate !== 'yes') {
+if ($confirmUsaMembership !== 'yes' || $confirmEnrollmentClosed !== 'yes' || $confirmInfoAccurate !== 'yes') {
     redirect_with_status('error', 'Please confirm the required registration notices before submitting.');
 }
 

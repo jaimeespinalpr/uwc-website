@@ -510,6 +510,26 @@ img {
   font-size: 0.94rem;
 }
 
+.usa-membership-section .grid-2 {
+  align-items: stretch;
+}
+
+.usa-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.usa-logo {
+  width: min(100%, 240px);
+  height: auto;
+  margin: 0 0 10px;
+}
+
+.usa-supporting-note {
+  color: var(--ink-500);
+  font-size: 0.86rem;
+}
+
 .card-link {
   display: block;
   text-decoration: none;
@@ -2947,6 +2967,16 @@ textarea:focus-visible {
 
 .compact-check-list li::before {
   top: 0.38rem;
+}
+
+.usa-sidebar-section .hero-actions {
+  gap: 8px;
+}
+
+.usa-sidebar-logo {
+  width: min(100%, 210px);
+  height: auto;
+  margin-top: 8px;
 }
 
 .coupon-entry .micro {

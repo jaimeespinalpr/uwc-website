@@ -35,6 +35,7 @@ $phone = clean_phone((string) ($_POST['phone'] ?? ''));
 $preferredContactMethod = clean_text((string) ($_POST['preferred_contact_method'] ?? ''));
 $notes = clean_text((string) ($_POST['notes'] ?? ''));
 $submissionSource = clean_text((string) ($_POST['submission_source'] ?? 'stripe-checkout-registration'));
+$confirmUsaMembership = clean_text((string) ($_POST['confirm_usaw_membership'] ?? ''));
 $confirmCheckoutReady = clean_text((string) ($_POST['confirm_enrollment_closed'] ?? ''));
 $confirmInfoAccurate = clean_text((string) ($_POST['confirm_info_accurate'] ?? ''));
 
@@ -46,7 +47,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     redirect_back_with_status('error', 'Please enter a valid email address.');
 }
 
-if ($confirmCheckoutReady !== 'yes' || $confirmInfoAccurate !== 'yes') {
+if ($confirmUsaMembership !== 'yes' || $confirmCheckoutReady !== 'yes' || $confirmInfoAccurate !== 'yes') {
     redirect_back_with_status('error', 'Please confirm the required registration notices before continuing to checkout.');
 }
 

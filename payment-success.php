@@ -77,7 +77,7 @@ $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://un
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2" />
   <link rel="shortcut icon" href="/favicon.png?v=2" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
-  <link rel="stylesheet" href="styles.css?v=usa-red-25" />
+  <link rel="stylesheet" href="styles.css?v=usa-red-26" />
 </head>
 <body class="register-page">
   <header class="site-header">
