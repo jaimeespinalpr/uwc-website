@@ -2916,6 +2916,10 @@ textarea:focus-visible {
   color: #b91c1c;
 }
 
+.estimate-line-coupon strong {
+  color: #b91c1c;
+}
+
 .estimate-line-total {
   padding-top: 4px;
   border-top: 1px dashed rgba(8, 26, 52, 0.15);
@@ -2943,6 +2947,26 @@ textarea:focus-visible {
 
 .compact-check-list li::before {
   top: 0.38rem;
+}
+
+.coupon-entry .micro {
+  margin-top: 6px;
+  min-height: 1.2em;
+}
+
+#coupon-feedback.is-success {
+  color: var(--success);
+  font-weight: 700;
+}
+
+#coupon-feedback.is-error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+#coupon-feedback.is-pending {
+  color: var(--ink-500);
+  font-weight: 600;
 }
 
 @media (max-width: 1040px) {

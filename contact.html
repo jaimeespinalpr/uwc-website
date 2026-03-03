@@ -18,7 +18,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2" />
   <link rel="shortcut icon" href="/favicon.png?v=2" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
-  <link rel="stylesheet" href="styles.css?v=usa-red-24" />
+  <link rel="stylesheet" href="styles.css?v=usa-red-25" />
 </head>
 <body class="register-page">
   <header class="site-header">
@@ -138,7 +138,8 @@
           <label class="coupon-entry">
             Coupon code (optional)
             <div class="coupon-row">
-              <input type="text" id="coupon-code-input" name="coupon_code" placeholder="Enter coupon code (e.g. SPRING-DEMO)" />
+              <input type="text" id="coupon-code-input" placeholder="Enter coupon code (e.g. SPRING-DEMO)" autocomplete="off" />
+              <input type="hidden" id="coupon-code-hidden" name="coupon_code" value="" />
               <button type="button" id="apply-coupon-btn" class="btn btn-sm btn-secondary">Apply</button>
             </div>
             <div id="coupon-feedback" class="micro"></div>
@@ -190,6 +191,10 @@
               <div class="estimate-line estimate-line-discount">
                 <span>Discounts</span>
                 <strong id="estimate-discount">-$0.00</strong>
+              </div>
+              <div class="estimate-line estimate-line-coupon" id="estimate-coupon-line" hidden>
+                <span>Coupon</span>
+                <strong id="estimate-coupon">-$0.00</strong>
               </div>
               <div class="estimate-line estimate-line-total">
                 <span>Estimated total</span>
@@ -288,8 +293,18 @@
       var addAthleteBtn = document.getElementById("add-athlete-btn");
       var joinPriorityBtn = document.getElementById("join-priority-btn");
       var couponInput = document.getElementById("coupon-code-input");
+      var couponHiddenInput = document.getElementById("coupon-code-hidden");
       var applyCouponBtn = document.getElementById("apply-coupon-btn");
       var couponFeedback = document.getElementById("coupon-feedback");
+      var estimateCouponLine = document.getElementById("estimate-coupon-line");
+      var estimateCouponEl = document.getElementById("estimate-coupon");
+      var couponState = {
+        applied: false,
+        appliedCode: "",
+        discountAmount: 0,
+        applying: false
+      };
+      var couponApplyDefaultLabel = applyCouponBtn ? applyCouponBtn.textContent : "Apply";
       if (!form || !athleteList) return;
 
       insertStatusBanner();
@@ -308,14 +323,32 @@
 
       if (applyCouponBtn) {
         applyCouponBtn.addEventListener('click', function () {
-          syncEstimate();
+          handleApplyCoupon();
         });
       }
 
       if (couponInput) {
+        couponInput.addEventListener('keydown', function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            handleApplyCoupon();
+          }
+        });
+
         couponInput.addEventListener('input', function () {
-          // live update when user types
-          syncEstimate();
+          var currentCode = (couponInput.value || "").trim();
+          if (currentCode === "") {
+            clearAppliedCoupon();
+            setCouponFeedback("");
+            syncEstimate();
+            return;
+          }
+
+          if (couponState.applied && !sameCouponCode(currentCode, couponState.appliedCode)) {
+            clearAppliedCoupon();
+            setCouponFeedback("Coupon changed. Press Apply to validate.", "pending");
+            syncEstimate();
+          }
         });
       }
 
@@ -347,13 +380,131 @@
         syncEstimate();
       });
 
-      form.addEventListener("submit", function () {
+      form.addEventListener("submit", function (event) {
         syncEstimate();
+        if (couponState.applying) {
+          event.preventDefault();
+          setCouponFeedback("Please wait while we validate your coupon.", "pending");
+          return;
+        }
+
+        if (couponInput && (couponInput.value || "").trim() !== "" && !couponState.applied) {
+          event.preventDefault();
+          setCouponFeedback("Press Apply to validate your coupon before checkout.", "error");
+          couponInput.focus();
+          return;
+        }
+
         if (joinPriorityBtn) {
           joinPriorityBtn.disabled = true;
           joinPriorityBtn.textContent = "Redirecting to Secure Checkout...";
         }
       });
+
+      function sameCouponCode(left, right) {
+        return String(left || "").trim().toLowerCase() === String(right || "").trim().toLowerCase();
+      }
+
+      function setCouponApplying(isApplying) {
+        couponState.applying = !!isApplying;
+        if (!applyCouponBtn) return;
+        applyCouponBtn.disabled = couponState.applying;
+        applyCouponBtn.textContent = couponState.applying ? "Applying..." : couponApplyDefaultLabel;
+      }
+
+      function setCouponFeedback(message, tone) {
+        if (!couponFeedback) return;
+        couponFeedback.textContent = message || "";
+        couponFeedback.classList.remove("is-success", "is-error", "is-pending");
+        if (!message) return;
+        if (tone === "success") {
+          couponFeedback.classList.add("is-success");
+        } else if (tone === "error") {
+          couponFeedback.classList.add("is-error");
+        } else if (tone === "pending") {
+          couponFeedback.classList.add("is-pending");
+        }
+      }
+
+      function clearAppliedCoupon() {
+        couponState.applied = false;
+        couponState.appliedCode = "";
+        couponState.discountAmount = 0;
+        if (couponHiddenInput) {
+          couponHiddenInput.value = "";
+        }
+      }
+
+      function handleApplyCoupon() {
+        if (!couponInput) return;
+
+        var couponCode = (couponInput.value || "").trim();
+        if (couponCode === "") {
+          clearAppliedCoupon();
+          setCouponFeedback("Enter a coupon code before pressing Apply.", "error");
+          syncEstimate();
+          return;
+        }
+
+        var cards = Array.prototype.slice.call(athleteList.querySelectorAll(".athlete-card"));
+        var preCouponTotal = 0;
+        cards.forEach(function (_card, index) {
+          preCouponTotal += getPricingForPosition(index + 1).total;
+        });
+        preCouponTotal = roundMoney(preCouponTotal);
+
+        setCouponApplying(true);
+        setCouponFeedback("Validating coupon...", "pending");
+
+        var payload = new URLSearchParams();
+        payload.set("coupon_code", couponCode);
+        payload.set("estimated_total_pre_coupon", preCouponTotal.toFixed(2));
+
+        fetch("validate_coupon.php", {
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "Accept": "application/json"
+          },
+          body: payload.toString()
+        })
+          .then(function (response) {
+            return response.json().catch(function () { return null; }).then(function (data) {
+              return { response: response, data: data };
+            });
+          })
+          .then(function (result) {
+            if (!result.data || result.data.ok !== true) {
+              throw new Error((result.data && result.data.message) ? result.data.message : "Coupon validation failed.");
+            }
+
+            if (result.data.valid) {
+              var rawDiscount = Number(result.data.discount_amount);
+              var discountAmount = Number.isFinite(rawDiscount) ? Math.max(0, rawDiscount) : 0;
+              couponState.applied = true;
+              couponState.appliedCode = couponCode;
+              couponState.discountAmount = roundMoney(discountAmount);
+              if (couponHiddenInput) {
+                couponHiddenInput.value = couponCode;
+              }
+              setCouponFeedback(result.data.message || "Coupon applied successfully.", "success");
+            } else {
+              clearAppliedCoupon();
+              setCouponFeedback(result.data.message || "Coupon not recognized.", "error");
+            }
+
+            syncEstimate();
+          })
+          .catch(function (error) {
+            clearAppliedCoupon();
+            setCouponFeedback(error && error.message ? error.message : "Could not validate coupon. Please try again.", "error");
+            syncEstimate();
+          })
+          .finally(function () {
+            setCouponApplying(false);
+          });
+      }
 
       function insertStatusBanner() {
         var urlParams = new URLSearchParams(window.location.search);
@@ -672,18 +823,25 @@
           }
         });
 
-        // Coupon is validated server-side only. Never expose active coupon logic in the browser.
-        var couponCode = couponInput ? (couponInput.value || "").trim() : "";
-        if (couponFeedback) {
-          couponFeedback.textContent = couponCode
-            ? "Coupon will be validated at secure checkout."
-            : "";
+        var couponDiscount = 0;
+        if (couponState.applied) {
+          couponDiscount = roundMoney(Math.min(couponState.discountAmount, finalTotal));
+          finalTotal = roundMoney(finalTotal - couponDiscount);
         }
 
-        var displayedDiscount = totalDiscount;
+        var displayedDiscount = totalDiscount + couponDiscount;
         if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);
         if (discountEl) discountEl.textContent = "-" + formatCurrency(displayedDiscount);
         if (totalEl) totalEl.textContent = formatCurrency(finalTotal);
+        if (estimateCouponLine && estimateCouponEl) {
+          if (couponDiscount > 0) {
+            estimateCouponLine.hidden = false;
+            estimateCouponEl.textContent = "-" + formatCurrency(couponDiscount);
+          } else {
+            estimateCouponLine.hidden = true;
+            estimateCouponEl.textContent = "-$0.00";
+          }
+        }
 
         var subtotalInput = document.getElementById("estimated-subtotal-input");
         var discountInput = document.getElementById("estimated-discount-input");
