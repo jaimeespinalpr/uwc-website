@@ -3261,3 +3261,39 @@ label,
     padding: 11px 12px;
   }
 }
+
+.register-hero-actions {
+  margin-top: 14px;
+}
+
+.contact-support-shell {
+  align-items: start;
+}
+
+.contact-support-card textarea {
+  min-height: 170px;
+}
+
+.contact-support-info {
+  display: grid;
+  gap: 12px;
+}
+
+.contact-support-info .info-card-subsection {
+  margin-top: 0;
+}
+
+.contact-support-info a {
+  color: var(--navy-700);
+  text-decoration: none;
+}
+
+.contact-support-info a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+  .contact-support-shell {
+    grid-template-columns: 1fr;
+  }
+}

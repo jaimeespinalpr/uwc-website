@@ -18,7 +18,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2" />
   <link rel="shortcut icon" href="/favicon.png?v=2" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
-  <link rel="stylesheet" href="styles.css?v=usa-red-26" />
+  <link rel="stylesheet" href="styles.css?v=usa-red-27" />
 </head>
 <body class="register-page">
   <header class="site-header">
@@ -54,6 +54,10 @@
         <span class="badge-soft">Full payment structure</span>
         <span class="badge-soft">2nd athlete 50% off</span>
         <span class="badge-soft">3rd+ athlete 75% off</span>
+      </div>
+      <div class="hero-actions register-hero-actions">
+        <a class="btn btn-md btn-primary" href="#register">Go to Registration</a>
+        <a class="btn btn-md btn-secondary" href="#contact-us">Contact Us</a>
       </div>
     </section>
 
@@ -270,6 +274,119 @@
       </form>
     </section>
 
+    <section class="section" id="contact-us" aria-labelledby="contact-us-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Support</p>
+          <h2 class="section-title" id="contact-us-title">Contact Us</h2>
+        </div>
+        <p class="section-note">
+          Send your question directly to our team. If your situation is unique, use the message field to explain freely.
+        </p>
+      </div>
+
+      <form id="contact-support-form" class="form-shell contact-support-shell" action="submit_contact_message.php" method="post">
+        <section class="form-card contact-support-card" aria-labelledby="contact-support-form-title">
+          <h3 id="contact-support-form-title">Send a message</h3>
+          <p>
+            Choose the topic that best matches your question. If none of the topics fit, choose
+            <strong>Other / Not listed</strong> and share details in your message.
+          </p>
+
+          <div class="form-grid">
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="honeypot-field" aria-hidden="true" />
+            <input type="hidden" name="submission_source" value="contact-support-form" />
+
+            <div class="field-row">
+              <label>
+                Full Name
+                <input type="text" name="contact_name" placeholder="Enter your full name" required />
+              </label>
+              <label>
+                Email Address
+                <input type="email" name="contact_email" placeholder="name@example.com" required />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                Phone Number (optional)
+                <input type="tel" name="contact_phone" placeholder="(302) 555-1234" />
+              </label>
+              <label>
+                Topic
+                <select name="contact_topic" required>
+                  <option value="">Select topic</option>
+                  <option value="registration">Registration and enrollment</option>
+                  <option value="program-levels">Program levels and placement</option>
+                  <option value="schedule-location">Schedule, location, parking, and entry</option>
+                  <option value="payment-billing">Payment and billing</option>
+                  <option value="usaw-membership">USA Wrestling membership</option>
+                  <option value="private-lessons">Private lessons</option>
+                  <option value="general">General question</option>
+                  <option value="other">Other / Not listed</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                Athlete Name (optional)
+                <input type="text" name="athlete_name" placeholder="Athlete name (if applicable)" />
+              </label>
+              <label>
+                Preferred Reply Method
+                <select name="preferred_reply_method">
+                  <option value="">No preference</option>
+                  <option value="email">Email</option>
+                  <option value="phone">Phone call</option>
+                  <option value="text">Text message</option>
+                </select>
+              </label>
+            </div>
+
+            <label>
+              Message
+              <textarea
+                name="contact_message"
+                minlength="10"
+                placeholder="Write your question here. If your case is not in the topic list, explain your situation freely and include any detail that can help us support you."
+                required
+              ></textarea>
+            </label>
+          </div>
+
+          <div class="hero-actions">
+            <button type="submit" class="btn btn-md btn-primary" id="contact-submit-btn">Send Message</button>
+            <a class="btn btn-md btn-secondary" href="mailto:gmunch@united-wc.com">Email gmunch@united-wc.com</a>
+          </div>
+        </section>
+
+        <aside class="info-card contact-support-info" aria-label="Contact details">
+          <h3>Direct Contact</h3>
+          <p>
+            You can always email us directly at <a href="mailto:gmunch@united-wc.com">gmunch@united-wc.com</a>.
+          </p>
+          <div class="info-card-subsection">
+            <h3>Quick guidance</h3>
+            <ul class="check-list compact-check-list">
+              <li>Use one message per topic for faster follow-up.</li>
+              <li>Include athlete name and age group if your question is class-specific.</li>
+              <li>For uncommon situations, use the message field and explain freely.</li>
+            </ul>
+          </div>
+          <div class="info-card-subsection">
+            <h3>Primary contact</h3>
+            <p>
+              Gary Munch<br />
+              Director of Operations and Founder<br />
+              <a href="tel:+13025282180">302-528-2180</a>
+            </p>
+          </div>
+        </aside>
+      </form>
+    </section>
+
     <footer class="site-footer">
       <div class="footer-grid">
         <div class="footer-copy">
@@ -279,6 +396,7 @@
           <a href="index.html">HOME</a>
           <a href="program.html">PROGRAM LEVELS</a>
           <a href="team.html">COACHES</a>
+          <a href="contact.html#contact-us">CONTACT US</a>
         </div>
       </div>
     </footer>
@@ -904,6 +1022,52 @@
           .replace(/>/g, "&gt;")
           .replace(/\"/g, "&quot;")
           .replace(/'/g, "&#39;");
+      }
+    })();
+  </script>
+
+  <script>
+    (function () {
+      var contactForm = document.getElementById("contact-support-form");
+      if (!contactForm) return;
+
+      var submitBtn = document.getElementById("contact-submit-btn");
+      var contactCard = contactForm.querySelector(".contact-support-card");
+
+      insertContactStatusBanner();
+
+      contactForm.addEventListener("submit", function () {
+        if (!submitBtn) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending...";
+      });
+
+      function insertContactStatusBanner() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var status = urlParams.get("contact_status");
+        var msg = urlParams.get("contact_msg");
+        if (!status || !contactCard) return;
+
+        var banner = document.createElement("div");
+        banner.className = "form-status-banner";
+
+        if (status === "success") {
+          banner.classList.add("is-success");
+          banner.innerHTML = "<strong>Message sent.</strong> Thank you for contacting us. We will reply soon.";
+        } else if (status === "partial") {
+          banner.classList.add("is-warning");
+          banner.innerHTML = "<strong>Message saved.</strong> We received your message, but email delivery had a temporary issue.";
+        } else {
+          banner.classList.add("is-error");
+          banner.innerHTML = "<strong>Could not send your message.</strong> " + (msg || "Please review your form and try again.");
+        }
+
+        var insertBeforeNode = contactCard.querySelector(".form-grid");
+        if (insertBeforeNode) {
+          contactCard.insertBefore(banner, insertBeforeNode);
+        } else {
+          contactCard.prepend(banner);
+        }
       }
     })();
   </script>
