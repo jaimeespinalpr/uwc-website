@@ -91,6 +91,7 @@ $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://un
         <a class="nav-link" href="program.html">PROGRAM LEVELS</a>
         <a class="nav-link" href="team.html">COACHES</a>
         <a class="nav-link is-active" href="contact.html" aria-current="page">REGISTER</a>
+        <a class="nav-link" href="contact.html#contact-us">CONTACT US</a>
       </nav>
     </div>
   </header>
