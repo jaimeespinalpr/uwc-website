@@ -119,7 +119,8 @@ jobs:
 
           PROTOCOL="${HOSTINGER_PROTOCOL:-sftp}"
           PORT="${HOSTINGER_PORT:-22}"
-          REMOTE_DIR="${HOSTINGER_REMOTE_DIR:-public_html}"
+          # Force production root deploy target to avoid secret drift to staging paths.
+          REMOTE_DIR="public_html"
 
           LFTP_SETTINGS="$(mktemp)"
           {
