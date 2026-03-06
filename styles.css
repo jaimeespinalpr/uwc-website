@@ -833,6 +833,26 @@ img {
   font-size: 0.9rem;
 }
 
+.group-oval {
+  width: 24px;
+  height: 14px;
+  border-radius: 999px;
+  margin-top: 10px;
+}
+
+.group-oval-red {
+  background: #ef4444;
+}
+
+.group-oval-white {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+}
+
+.group-oval-blue {
+  background: #3b82f6;
+}
+
 .spots-line {
   margin-top: 10px;
   display: inline-flex;
