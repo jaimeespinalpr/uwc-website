@@ -8,6 +8,7 @@ header('Expires: 0');
 
 const REGISTRATION_PROMO_COUPON_CODE = 'UWCULTRATEAM';
 const REGISTRATION_PROMO_COUPON_DISCOUNT = 142.50; // fixed discount, one athlete equivalent
+const REGISTRATION_NOFEE_COUPON_CODE = 'NOFEE';
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     http_response_code(405);
@@ -32,7 +33,10 @@ if ($couponCode === '') {
     exit;
 }
 
-if (strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) !== 0) {
+if (
+    strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) !== 0
+    && strcasecmp($couponCode, REGISTRATION_NOFEE_COUPON_CODE) !== 0
+) {
     echo json_encode([
         'ok' => true,
         'valid' => false,
@@ -42,13 +46,21 @@ if (strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) !== 0) {
     exit;
 }
 
-$discountAmount = normalize_money(min(REGISTRATION_PROMO_COUPON_DISCOUNT, max(0.0, $estimatedPreCouponTotal)));
+$discountAmount = 0.0;
+$message = '';
+if (strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) === 0) {
+    $discountAmount = normalize_money(min(REGISTRATION_PROMO_COUPON_DISCOUNT, max(0.0, $estimatedPreCouponTotal)));
+    $message = 'Coupon applied: -$' . number_format($discountAmount, 2, '.', '') . ' (one athlete).';
+} elseif (strcasecmp($couponCode, REGISTRATION_NOFEE_COUPON_CODE) === 0) {
+    $discountAmount = normalize_money(max(0.0, $estimatedPreCouponTotal));
+    $message = 'Coupon applied: 100% off. Total due is now $0.00.';
+}
 
 echo json_encode([
     'ok' => true,
     'valid' => true,
     'discount_amount' => $discountAmount,
-    'message' => 'Coupon applied: -$' . number_format($discountAmount, 2, '.', '') . ' (one athlete).',
+    'message' => $message,
 ], JSON_UNESCAPED_SLASHES);
 exit;
 

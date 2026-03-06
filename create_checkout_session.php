@@ -14,6 +14,7 @@ header('Expires: 0');
 const REGISTRATION_BASE_PRICE = 285.00;
 const REGISTRATION_PROMO_COUPON_CODE = 'UWCULTRATEAM';
 const REGISTRATION_PROMO_COUPON_DISCOUNT = 142.50; // 50% off one athlete only
+const REGISTRATION_NOFEE_COUPON_CODE = 'NOFEE'; // 100% off
 const CLASS_CAPACITY_MAX = 24;
 const STRIPE_REGISTRATION_SUBMISSIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
 const STRIPE_REGISTRATION_ERROR_LOG = __DIR__ . '/data/stripe_registration_errors.log';
@@ -156,13 +157,20 @@ $baseSubtotal = normalize_money($baseSubtotal);
 $discountTotal = normalize_money($discountTotal);
 $estimatedTotal = normalize_money($estimatedTotal);
 
-// Coupon handling: server-side authoritative check (50% off one athlete only).
+// Coupon handling: server-side authoritative check.
 $couponCode = clean_text((string) ($_POST['coupon_code'] ?? ''));
 $couponApplied = false;
 $couponDiscountAmount = 0.0;
-if ($couponCode !== '' && strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) === 0) {
-    $couponApplied = true;
-    $couponDiscountAmount = normalize_money(min(REGISTRATION_PROMO_COUPON_DISCOUNT, $estimatedTotal));
+if ($couponCode !== '') {
+    if (strcasecmp($couponCode, REGISTRATION_PROMO_COUPON_CODE) === 0) {
+        $couponApplied = true;
+        $couponDiscountAmount = normalize_money(min(REGISTRATION_PROMO_COUPON_DISCOUNT, $estimatedTotal));
+    } elseif (strcasecmp($couponCode, REGISTRATION_NOFEE_COUPON_CODE) === 0) {
+        $couponApplied = true;
+        $couponDiscountAmount = normalize_money(max(0.0, $estimatedTotal));
+    }
+}
+if ($couponApplied && $couponDiscountAmount > 0) {
     $discountTotal = normalize_money($discountTotal + $couponDiscountAmount);
     $estimatedTotal = normalize_money($estimatedTotal - $couponDiscountAmount);
 }
@@ -215,56 +223,75 @@ $siteBaseUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https:
 $successUrl = $siteBaseUrl . '/payment-success.php?session_id={CHECKOUT_SESSION_ID}&submission_id=' . rawurlencode($submissionId);
 $cancelUrl = $siteBaseUrl . '/payment-cancel.html?submission_id=' . rawurlencode($submissionId);
 
-$checkoutParams = [
-    'mode' => 'payment',
-    'success_url' => $successUrl,
-    'cancel_url' => $cancelUrl,
-    'customer_email' => $email,
-    'client_reference_id' => $submissionId,
-    'billing_address_collection' => 'auto',
-    'payment_method_types[0]' => 'card',
-    'line_items[0][quantity]' => 1,
-    'line_items[0][price_data][currency]' => stripe_currency_code(),
-    'line_items[0][price_data][unit_amount]' => (string) ((int) round($estimatedTotal * 100)),
-    'line_items[0][price_data][product_data][name]' => 'UWC Spring Session 2026 Registration',
-    'line_items[0][price_data][product_data][description]' => 'Family registration for ' . $athleteCount . ' athlete' . ($athleteCount === 1 ? '' : 's'),
-    'metadata[submission_id]' => $submissionId,
-    'metadata[guardian_name]' => substr($guardianName, 0, 500),
-    'metadata[guardian_email]' => substr($email, 0, 500),
-    'metadata[coupon_code]' => substr($couponCode, 0, 100),
-    'metadata[coupon_applied]' => $couponApplied ? 'yes' : 'no',
-    'metadata[coupon_discount]' => number_format($couponDiscountAmount, 2, '.', ''),
-    'metadata[athlete_count]' => (string) $athleteCount,
-    'metadata[source]' => $submissionSource !== '' ? $submissionSource : 'stripe-checkout-registration',
-    'payment_intent_data[metadata][submission_id]' => $submissionId,
-    'payment_intent_data[metadata][guardian_email]' => substr($email, 0, 500),
-];
-
-$automaticTaxRequested = stripe_automatic_tax_enabled();
+$isNoFeeRegistration = $estimatedTotal <= 0.0;
+$automaticTaxRequested = false;
 $automaticTaxEnabledInSession = false;
-if ($automaticTaxRequested) {
-    $checkoutParams['automatic_tax[enabled]'] = 'true';
-}
+$session = [];
+$submissionPaymentStatus = 'checkout_started';
 
-try {
-    $session = stripe_api_request('POST', '/v1/checkout/sessions', $checkoutParams);
-    $automaticTaxEnabledInSession = $automaticTaxRequested;
-} catch (Throwable $e) {
-    $message = $e->getMessage();
+if ($isNoFeeRegistration) {
+    $session = build_no_fee_session(
+        $submissionId,
+        $email,
+        $guardianName,
+        $couponCode,
+        $couponApplied,
+        $couponDiscountAmount,
+        $athleteCount,
+        $submissionSource
+    );
+    $submissionPaymentStatus = 'no_payment_required';
+} else {
+    $checkoutParams = [
+        'mode' => 'payment',
+        'success_url' => $successUrl,
+        'cancel_url' => $cancelUrl,
+        'customer_email' => $email,
+        'client_reference_id' => $submissionId,
+        'billing_address_collection' => 'auto',
+        'payment_method_types[0]' => 'card',
+        'line_items[0][quantity]' => 1,
+        'line_items[0][price_data][currency]' => stripe_currency_code(),
+        'line_items[0][price_data][unit_amount]' => (string) ((int) round($estimatedTotal * 100)),
+        'line_items[0][price_data][product_data][name]' => 'UWC Spring Session 2026 Registration',
+        'line_items[0][price_data][product_data][description]' => 'Family registration for ' . $athleteCount . ' athlete' . ($athleteCount === 1 ? '' : 's'),
+        'metadata[submission_id]' => $submissionId,
+        'metadata[guardian_name]' => substr($guardianName, 0, 500),
+        'metadata[guardian_email]' => substr($email, 0, 500),
+        'metadata[coupon_code]' => substr($couponCode, 0, 100),
+        'metadata[coupon_applied]' => $couponApplied ? 'yes' : 'no',
+        'metadata[coupon_discount]' => number_format($couponDiscountAmount, 2, '.', ''),
+        'metadata[athlete_count]' => (string) $athleteCount,
+        'metadata[source]' => $submissionSource !== '' ? $submissionSource : 'stripe-checkout-registration',
+        'payment_intent_data[metadata][submission_id]' => $submissionId,
+        'payment_intent_data[metadata][guardian_email]' => substr($email, 0, 500),
+    ];
 
-    if ($automaticTaxRequested && should_retry_without_automatic_tax($message)) {
-        unset($checkoutParams['automatic_tax[enabled]']);
-        try {
-            $session = stripe_api_request('POST', '/v1/checkout/sessions', $checkoutParams);
-            $automaticTaxEnabledInSession = false;
-            log_stripe_registration_error('Stripe checkout created without automatic tax fallback: ' . $message);
-        } catch (Throwable $retryError) {
-            log_stripe_registration_error('Stripe checkout session retry failed: ' . $retryError->getMessage());
+    $automaticTaxRequested = stripe_automatic_tax_enabled();
+    if ($automaticTaxRequested) {
+        $checkoutParams['automatic_tax[enabled]'] = 'true';
+    }
+
+    try {
+        $session = stripe_api_request('POST', '/v1/checkout/sessions', $checkoutParams);
+        $automaticTaxEnabledInSession = $automaticTaxRequested;
+    } catch (Throwable $e) {
+        $message = $e->getMessage();
+
+        if ($automaticTaxRequested && should_retry_without_automatic_tax($message)) {
+            unset($checkoutParams['automatic_tax[enabled]']);
+            try {
+                $session = stripe_api_request('POST', '/v1/checkout/sessions', $checkoutParams);
+                $automaticTaxEnabledInSession = false;
+                log_stripe_registration_error('Stripe checkout created without automatic tax fallback: ' . $message);
+            } catch (Throwable $retryError) {
+                log_stripe_registration_error('Stripe checkout session retry failed: ' . $retryError->getMessage());
+                redirect_back_with_status('error', 'Checkout could not be started. Please try again in a moment.');
+            }
+        } else {
+            log_stripe_registration_error('Stripe checkout session create failed: ' . $message);
             redirect_back_with_status('error', 'Checkout could not be started. Please try again in a moment.');
         }
-    } else {
-        log_stripe_registration_error('Stripe checkout session create failed: ' . $message);
-        redirect_back_with_status('error', 'Checkout could not be started. Please try again in a moment.');
     }
 }
 
@@ -278,7 +305,7 @@ $submission = [
     'checkout_session_status' => (string) ($session['status'] ?? ''),
     'automatic_tax_requested' => $automaticTaxRequested ? 'yes' : 'no',
     'automatic_tax_enabled_in_session' => $automaticTaxEnabledInSession ? 'yes' : 'no',
-    'payment_status' => 'checkout_started',
+    'payment_status' => $submissionPaymentStatus,
     'guardian_name' => $guardianName,
     'email' => $email,
     'phone' => $phone,
@@ -303,6 +330,18 @@ if (!save_submission_csv(STRIPE_REGISTRATION_SUBMISSIONS_CSV, $submission)) {
 }
 if (!uwc_excel_export_registration($submission, $athletes, $pricingLines)) {
     log_stripe_registration_error('Failed to save Excel-friendly registration exports for ' . $submissionId);
+}
+
+$checkoutSessionId = trim((string) ($session['id'] ?? ''));
+if ($isNoFeeRegistration) {
+    if (!record_no_fee_payment_success($session, $submissionId)) {
+        log_stripe_registration_error('Failed to record no-fee payment success for session ' . $checkoutSessionId);
+    }
+    if (!uwc_excel_export_payment($session, $submissionId, 'no_fee_coupon')) {
+        log_stripe_registration_error('Failed to save no-fee payment export for ' . $submissionId);
+    }
+    send_no_fee_registration_emails($submission, $athletes);
+    redirect_back_with_status('success', 'Registration submitted successfully. No payment was required for this coupon.');
 }
 
 $checkoutUrl = (string) ($session['url'] ?? '');
@@ -420,6 +459,137 @@ function should_retry_without_automatic_tax(string $message): bool
     return str_contains($message, 'automatic tax')
         || str_contains($message, 'head office address')
         || str_contains($message, 'tax calculation');
+}
+
+function build_no_fee_session(
+    string $submissionId,
+    string $email,
+    string $guardianName,
+    string $couponCode,
+    bool $couponApplied,
+    float $couponDiscountAmount,
+    int $athleteCount,
+    string $submissionSource
+): array {
+    return [
+        'id' => 'nofee_' . gmdate('Ymd_His') . '_' . substr(bin2hex(random_bytes(4)), 0, 8),
+        'status' => 'complete',
+        'payment_status' => 'paid',
+        'amount_total' => 0,
+        'currency' => stripe_currency_code(),
+        'customer_email' => $email,
+        'client_reference_id' => $submissionId,
+        'metadata' => [
+            'submission_id' => $submissionId,
+            'guardian_name' => substr($guardianName, 0, 500),
+            'guardian_email' => substr($email, 0, 500),
+            'coupon_code' => substr($couponCode, 0, 100),
+            'coupon_applied' => $couponApplied ? 'yes' : 'no',
+            'coupon_discount' => number_format($couponDiscountAmount, 2, '.', ''),
+            'athlete_count' => (string) $athleteCount,
+            'source' => $submissionSource !== '' ? $submissionSource : 'stripe-checkout-registration',
+        ],
+    ];
+}
+
+function record_no_fee_payment_success(array $session, string $submissionId): bool
+{
+    $sessionId = trim((string) ($session['id'] ?? ''));
+    if ($sessionId === '') {
+        return false;
+    }
+
+    $alreadyLogged = get_paid_stripe_session_ids();
+    if (isset($alreadyLogged[$sessionId])) {
+        return true;
+    }
+
+    $record = [
+        'logged_at_utc' => gmdate('c'),
+        'stripe_mode' => stripe_mode_label(),
+        'session_id' => $sessionId,
+        'submission_id' => $submissionId,
+        'payment_status' => (string) ($session['payment_status'] ?? 'paid'),
+        'status' => (string) ($session['status'] ?? 'complete'),
+        'amount_total' => (string) ($session['amount_total'] ?? 0),
+        'currency' => (string) ($session['currency'] ?? stripe_currency_code()),
+        'customer_email' => (string) ($session['customer_email'] ?? ''),
+        'payment_intent_id' => '',
+    ];
+
+    return save_submission_csv(STRIPE_PAYMENT_SUCCESS_LOG, $record);
+}
+
+function send_no_fee_registration_emails(array $submission, array $athletes): void
+{
+    $guardianEmail = trim((string) ($submission['email'] ?? ''));
+    $guardianName = trim((string) ($submission['guardian_name'] ?? 'Parent / Guardian'));
+    $submissionId = trim((string) ($submission['submission_id'] ?? ''));
+
+    $athleteSummary = [];
+    foreach ($athletes as $athlete) {
+        $athleteSummary[] = '- '
+            . trim((string) ($athlete['athlete_name'] ?? 'Athlete'))
+            . ' | '
+            . trim((string) ($athlete['athlete_age_group'] ?? ''))
+            . ' | '
+            . trim((string) ($athlete['class_interest'] ?? ''));
+    }
+
+    $fromName = defined('WAITLIST_FROM_NAME') ? (string) WAITLIST_FROM_NAME : 'United Wrestling Club';
+    $fromEmail = defined('WAITLIST_FROM_EMAIL') ? (string) WAITLIST_FROM_EMAIL : 'noreply@united-wc.com';
+    $contactEmail = defined('WAITLIST_CONTACT_EMAIL') ? (string) WAITLIST_CONTACT_EMAIL : 'info@united-wc.com';
+    $adminEmail = (defined('WAITLIST_PAYMENT_EMAIL') && trim((string) WAITLIST_PAYMENT_EMAIL) !== '')
+        ? (string) WAITLIST_PAYMENT_EMAIL
+        : (defined('WAITLIST_ADMIN_EMAIL') ? (string) WAITLIST_ADMIN_EMAIL : $contactEmail);
+    $headers = [
+        'From: ' . $fromName . ' <' . $fromEmail . '>',
+        'Reply-To: ' . $contactEmail,
+        'Content-Type: text/plain; charset=UTF-8',
+    ];
+
+    if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
+        $parentSubject = 'UWC Registration Confirmation - Spring Session 2026';
+        $parentBody = implode("\n", array_filter([
+            'Thank you for registering with United Wrestling Club.',
+            '',
+            'Your registration has been confirmed with no payment required.',
+            'A private family waiver was applied to this registration.',
+            'Amount charged: $0.00',
+            'Submission ID: ' . ($submissionId !== '' ? $submissionId : '(not available)'),
+            '',
+            'Athletes:',
+            implode("\n", $athleteSummary),
+            '',
+            'Questions? ' . $contactEmail
+                . (defined('WAITLIST_CONTACT_PHONE') && trim((string) WAITLIST_CONTACT_PHONE) !== '' ? ' | ' . WAITLIST_CONTACT_PHONE : ''),
+            '',
+            "It's Bigger Than Wrestling.",
+        ]));
+
+        if (!uwc_transport_mail($guardianEmail, $parentSubject, $parentBody, implode("\r\n", $headers))) {
+            log_stripe_registration_error('Failed no-fee parent confirmation email for submission ' . $submissionId);
+        }
+    }
+
+    if ($adminEmail !== '' && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
+        $adminSubject = 'UWC Registration Confirmed (No Fee)' . ($guardianName !== '' ? ' - ' . $guardianName : '');
+        $adminBody = implode("\n", array_filter([
+            'A no-fee registration was confirmed.',
+            '',
+            'Parent / Guardian: ' . ($guardianName !== '' ? $guardianName : '(not provided)'),
+            'Email: ' . ($guardianEmail !== '' ? $guardianEmail : '(not provided)'),
+            'Submission ID: ' . ($submissionId !== '' ? $submissionId : '(not available)'),
+            'Amount charged: $0.00',
+            '',
+            'Athletes:',
+            implode("\n", $athleteSummary),
+        ]));
+
+        if (!uwc_transport_mail($adminEmail, $adminSubject, $adminBody, implode("\r\n", $headers))) {
+            log_stripe_registration_error('Failed no-fee admin notification email for submission ' . $submissionId);
+        }
+    }
 }
 
 function build_requested_class_counts(array $athletes): array
