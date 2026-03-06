@@ -241,14 +241,10 @@ function send_payment_confirmation_emails_if_needed_webhook(array $session, stri
     $guardianName = trim((string) ($session['metadata']['guardian_name'] ?? ''));
     $athleteCount = trim((string) ($session['metadata']['athlete_count'] ?? ''));
     $amount = format_amount_from_cents_webhook((int) ($session['amount_total'] ?? 0), (string) ($session['currency'] ?? 'usd'));
-    $paymentIntentId = is_array($session['payment_intent'] ?? null)
-        ? (string) (($session['payment_intent']['id'] ?? ''))
-        : (string) ($session['payment_intent'] ?? '');
     $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://united-wc.com'), '/');
     $logoUrl = defined('WAITLIST_LOGO_URL') ? WAITLIST_LOGO_URL : $siteUrl . '/assets/uwc-logo.png';
 
     $parentSent = true;
-    $clubSent = true;
 
     if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
         $parentSubject = 'UWC Payment Confirmation - Spring Session 2026';
@@ -286,53 +282,12 @@ function send_payment_confirmation_emails_if_needed_webhook(array $session, stri
         );
     }
 
-    $clubSubject = 'UWC Registration Payment Received' . ($guardianName !== '' ? ' - ' . $guardianName : '');
-    $clubPlain = implode("\n", array_filter([
-        'Stripe checkout payment completed (webhook).',
-        '',
-        'Parent / Guardian: ' . ($guardianName !== '' ? $guardianName : '(not provided)'),
-        'Parent Email: ' . ($guardianEmail !== '' ? $guardianEmail : '(not provided)'),
-        'Athletes: ' . ($athleteCount !== '' ? $athleteCount : '(not available)'),
-        'Amount paid: ' . $amount,
-        'Submission ID: ' . ($submissionId !== '' ? $submissionId : ((string) ($session['client_reference_id'] ?? ''))),
-        'Stripe Session ID: ' . $sessionId,
-        'Payment Intent ID: ' . ($paymentIntentId !== '' ? $paymentIntentId : '(not available)'),
-    ]));
-
-    $clubHtml = build_club_payment_notification_html_webhook(
-        $guardianName,
-        $guardianEmail,
-        $athleteCount,
-        $amount,
-        $submissionId !== '' ? $submissionId : ((string) ($session['client_reference_id'] ?? '')),
-        $sessionId,
-        $paymentIntentId,
-        $logoUrl
-    );
-
-    $clubHeaders = [];
-    if ($guardianEmail !== '' && filter_var($guardianEmail, FILTER_VALIDATE_EMAIL)) {
-        $clubHeaders[] = 'Reply-To: ' . $guardianEmail;
-    }
-    $paymentNotificationEmail = (defined('WAITLIST_PAYMENT_EMAIL') && trim((string) WAITLIST_PAYMENT_EMAIL) !== '')
-        ? (string) WAITLIST_PAYMENT_EMAIL
-        : WAITLIST_ADMIN_EMAIL;
-
-    $clubSent = payment_send_mail_message_webhook($paymentNotificationEmail, $clubSubject, $clubPlain, $clubHtml, $clubHeaders);
-
-    if ($parentSent && $clubSent) {
+    if ($parentSent) {
         payment_confirmation_mark_sent_webhook($sessionId);
         return 'sent';
     }
 
-    $failureParts = [];
-    if (!$parentSent) {
-        $failureParts[] = 'parent';
-    }
-    if (!$clubSent) {
-        $failureParts[] = 'club';
-    }
-    log_payment_email_error_webhook('Webhook payment email send failed for session ' . $sessionId . ' [' . implode(',', $failureParts) . ']');
+    log_payment_email_error_webhook('Webhook payment email send failed for session ' . $sessionId . ' [parent]');
     return 'send-failed';
 }
 

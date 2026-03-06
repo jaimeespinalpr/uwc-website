@@ -539,9 +539,6 @@ function send_no_fee_registration_emails(array $submission, array $athletes): vo
     $fromName = defined('WAITLIST_FROM_NAME') ? (string) WAITLIST_FROM_NAME : 'United Wrestling Club';
     $fromEmail = defined('WAITLIST_FROM_EMAIL') ? (string) WAITLIST_FROM_EMAIL : 'noreply@united-wc.com';
     $contactEmail = defined('WAITLIST_CONTACT_EMAIL') ? (string) WAITLIST_CONTACT_EMAIL : 'info@united-wc.com';
-    $adminEmail = (defined('WAITLIST_PAYMENT_EMAIL') && trim((string) WAITLIST_PAYMENT_EMAIL) !== '')
-        ? (string) WAITLIST_PAYMENT_EMAIL
-        : (defined('WAITLIST_ADMIN_EMAIL') ? (string) WAITLIST_ADMIN_EMAIL : $contactEmail);
     $headers = [
         'From: ' . $fromName . ' <' . $fromEmail . '>',
         'Reply-To: ' . $contactEmail,
@@ -572,24 +569,6 @@ function send_no_fee_registration_emails(array $submission, array $athletes): vo
         }
     }
 
-    if ($adminEmail !== '' && filter_var($adminEmail, FILTER_VALIDATE_EMAIL)) {
-        $adminSubject = 'UWC Registration Confirmed (No Fee)' . ($guardianName !== '' ? ' - ' . $guardianName : '');
-        $adminBody = implode("\n", array_filter([
-            'A no-fee registration was confirmed.',
-            '',
-            'Parent / Guardian: ' . ($guardianName !== '' ? $guardianName : '(not provided)'),
-            'Email: ' . ($guardianEmail !== '' ? $guardianEmail : '(not provided)'),
-            'Submission ID: ' . ($submissionId !== '' ? $submissionId : '(not available)'),
-            'Amount charged: $0.00',
-            '',
-            'Athletes:',
-            implode("\n", $athleteSummary),
-        ]));
-
-        if (!uwc_transport_mail($adminEmail, $adminSubject, $adminBody, implode("\r\n", $headers))) {
-            log_stripe_registration_error('Failed no-fee admin notification email for submission ' . $submissionId);
-        }
-    }
 }
 
 function build_requested_class_counts(array $athletes): array

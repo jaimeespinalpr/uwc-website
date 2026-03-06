@@ -76,14 +76,6 @@ if (!function_exists('uwc_excel_export_registration')) {
             }
         }
 
-        try {
-            if (!uwc_excel_send_registration_export_email($submission, $athletes)) {
-                uwc_excel_log_email_error('Registration export email failed for submission ' . $submissionId);
-            }
-        } catch (Throwable $e) {
-            uwc_excel_log_email_error('Registration export email exception for submission ' . $submissionId . ': ' . $e->getMessage());
-        }
-
         return true;
     }
 
@@ -135,14 +127,60 @@ if (!function_exists('uwc_excel_export_registration')) {
         }
 
         try {
-            if (!uwc_excel_send_payment_export_email($row, $session)) {
-                uwc_excel_log_email_error('Payment export email failed for Stripe session ' . $sessionId);
+            if (!uwc_excel_send_registration_payment_export_email($row, $session)) {
+                uwc_excel_log_email_error('Combined registration+payment export email failed for Stripe session ' . $sessionId);
             }
         } catch (Throwable $e) {
-            uwc_excel_log_email_error('Payment export email exception for Stripe session ' . $sessionId . ': ' . $e->getMessage());
+            uwc_excel_log_email_error('Combined registration+payment export email exception for Stripe session ' . $sessionId . ': ' . $e->getMessage());
         }
 
         return true;
+    }
+
+    function uwc_excel_send_registration_payment_export_email(array $paymentRow, array $session = []): bool
+    {
+        $submissionId = trim((string) ($paymentRow['submission_id'] ?? ''));
+        $sessionId = trim((string) ($paymentRow['stripe_session_id'] ?? (($session['id'] ?? ''))));
+        $customerEmail = trim((string) ($paymentRow['customer_email'] ?? (($session['customer_email'] ?? ''))));
+        $customerName = trim((string) ($paymentRow['customer_name'] ?? (($session['customer_details']['name'] ?? ''))));
+        $amountDisplay = trim((string) ($paymentRow['amount_total_display'] ?? ''));
+        $source = trim((string) ($paymentRow['source'] ?? 'stripe'));
+        $recordedAt = trim((string) ($paymentRow['recorded_at_utc'] ?? gmdate('c')));
+
+        $subjectKey = $submissionId !== '' ? $submissionId : $sessionId;
+        $subject = 'UWC Excel Update - Registration + Payment';
+        if ($subjectKey !== '') {
+            $subject .= ' - ' . $subjectKey;
+        }
+
+        $lines = [
+            'Registration and payment exports were updated.',
+            '',
+            'Recorded (UTC): ' . ($recordedAt !== '' ? $recordedAt : gmdate('c')),
+            'Source: ' . ($source !== '' ? $source : 'stripe'),
+            'Submission ID: ' . ($submissionId !== '' ? $submissionId : '(not provided)'),
+            'Stripe Session ID: ' . ($sessionId !== '' ? $sessionId : '(not provided)'),
+            'Customer: ' . ($customerName !== '' ? $customerName : '(not provided)'),
+            'Customer Email: ' . ($customerEmail !== '' ? $customerEmail : '(not provided)'),
+        ];
+        if ($amountDisplay !== '') {
+            $lines[] = 'Amount: ' . $amountDisplay;
+        }
+        $lines[] = '';
+        $lines[] = 'Attached files:';
+        $lines[] = '- ' . basename(UWC_EXCEL_EXPORT_REGISTRATIONS_CSV);
+        $lines[] = '- ' . basename(UWC_EXCEL_EXPORT_ATHLETES_CSV);
+        $lines[] = '- ' . basename(UWC_EXCEL_EXPORT_PAYMENTS_CSV);
+
+        return uwc_excel_send_export_email(
+            $subject,
+            implode("\n", $lines),
+            [
+                UWC_EXCEL_EXPORT_REGISTRATIONS_CSV,
+                UWC_EXCEL_EXPORT_ATHLETES_CSV,
+                UWC_EXCEL_EXPORT_PAYMENTS_CSV,
+            ]
+        );
     }
 
     function uwc_excel_build_athlete_summary(array $athletes): string
