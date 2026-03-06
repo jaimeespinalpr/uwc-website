@@ -101,6 +101,14 @@ $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://un
       <span class="pill"><?php echo $isPaid ? 'Payment Received' : 'Checkout Status'; ?></span>
       <h1 id="payment-success-title"><?php echo $isPaid ? 'Thank you. Your payment was received.' : 'We could not confirm payment yet.'; ?></h1>
       <p><?php echo htmlspecialchars($statusText, ENT_QUOTES, 'UTF-8'); ?></p>
+      <?php if ($isPaid): ?>
+        <div class="success-spotlight">
+          <p class="success-spotlight-kicker">Registration Complete</p>
+          <h2>Welcome to United Wrestling Club</h2>
+          <p>Your registration is confirmed. Redirecting to Coaches so you can review the coaching team.</p>
+          <a class="btn btn-lg btn-primary" href="<?php echo e_out($siteUrl); ?>/team.html#coaches-title">View Coaches Now</a>
+        </div>
+      <?php endif; ?>
       <?php if ($isPaid && $confirmationEmailStatus === 'sent'): ?>
         <div class="badge-line"><span class="badge-soft">Confirmation email sent to <?php echo e_out($guardianEmail !== '' ? $guardianEmail : 'the payer'); ?></span></div>
       <?php elseif ($isPaid && $confirmationEmailStatus === 'already-sent'): ?>
@@ -165,6 +173,13 @@ $siteUrl = rtrim((defined('WAITLIST_SITE_URL') ? WAITLIST_SITE_URL : 'https://un
       <?php endif; ?>
     </section>
   </main>
+  <?php if ($isPaid): ?>
+  <script>
+    setTimeout(function () {
+      window.location.href = <?php echo json_encode($siteUrl . '/team.html#coaches-title'); ?>;
+    }, 4500);
+  </script>
+  <?php endif; ?>
 </body>
 </html>
 <?php
