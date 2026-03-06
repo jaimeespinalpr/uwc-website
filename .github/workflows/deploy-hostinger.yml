@@ -119,8 +119,9 @@ jobs:
 
           PROTOCOL="${HOSTINGER_PROTOCOL:-sftp}"
           PORT="${HOSTINGER_PORT:-22}"
-          # Force production root deploy target to avoid secret drift to staging paths.
-          REMOTE_DIR="public_html"
+          # Force production deploy target to Hostinger FTP absolute root.
+          # This account serves the live site from // (double-slash root).
+          REMOTE_DIR="//"
 
           LFTP_SETTINGS="$(mktemp)"
           {
