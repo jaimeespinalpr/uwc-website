@@ -477,6 +477,9 @@
 
         couponInput.addEventListener('input', function () {
           var currentCode = (couponInput.value || "").trim();
+          if (couponHiddenInput) {
+            couponHiddenInput.value = currentCode;
+          }
           if (currentCode === "") {
             clearAppliedCoupon();
             setCouponFeedback("");
@@ -528,11 +531,8 @@
           return;
         }
 
-        if (couponInput && (couponInput.value || "").trim() !== "" && !couponState.applied) {
-          event.preventDefault();
-          setCouponFeedback("Press Apply to validate your coupon before checkout.", "error");
-          couponInput.focus();
-          return;
+        if (couponHiddenInput && couponInput) {
+          couponHiddenInput.value = (couponInput.value || "").trim();
         }
 
         if (joinPriorityBtn) {
@@ -571,7 +571,7 @@
         couponState.appliedCode = "";
         couponState.discountAmount = 0;
         if (couponHiddenInput) {
-          couponHiddenInput.value = "";
+          couponHiddenInput.value = couponInput ? (couponInput.value || "").trim() : "";
         }
       }
 
