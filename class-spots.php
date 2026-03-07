@@ -5,6 +5,10 @@ const CLASS_SPOTS_CAPACITY = 24;
 const CLASS_SPOTS_MANUALLY_CLOSED_KEYS = [
     'foundation',
 ];
+const CLASS_SPOTS_COUNT_ADJUSTMENTS = [
+    'Rising Competitors - Advanced (Ages 12-16)' => 7,
+    'Elite Wrestlers (Ages 14+)' => -7,
+];
 const CLASS_SPOTS_REGISTRATIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
 const CLASS_SPOTS_PAID_LOG_CSV = __DIR__ . '/data/stripe_payment_success.csv';
 const CLASS_SPOTS_WAITLIST_CSV = __DIR__ . '/data/stripe_class_waitlist.csv';
@@ -28,6 +32,7 @@ $classesByKey = [
 
 $paidSessionIds = class_spots_paid_session_ids();
 $paidCountsByName = class_spots_paid_counts_by_name($paidSessionIds);
+$paidCountsByName = class_spots_apply_count_adjustments($paidCountsByName, CLASS_SPOTS_COUNT_ADJUSTMENTS, $classesByKey);
 $waitlistCountsByName = class_spots_waitlist_counts_by_name();
 
 $classes = [];
@@ -142,6 +147,27 @@ function class_spots_paid_counts_by_name(array $paidSessionIds): array
         }
     } finally {
         fclose($handle);
+    }
+
+    return $counts;
+}
+
+function class_spots_apply_count_adjustments(array $counts, array $adjustments, array $classesByKey): array
+{
+    $knownClassNames = array_values($classesByKey);
+    foreach ($knownClassNames as $className) {
+        if (!isset($counts[$className])) {
+            $counts[$className] = 0;
+        }
+    }
+
+    foreach ($adjustments as $className => $delta) {
+        $canonical = class_spots_canonical_name((string) $className);
+        if ($canonical === '' || !in_array($canonical, $knownClassNames, true)) {
+            continue;
+        }
+
+        $counts[$canonical] = max(0, (int) ($counts[$canonical] ?? 0) + (int) $delta);
     }
 
     return $counts;

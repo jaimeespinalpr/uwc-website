@@ -16,6 +16,10 @@ const REGISTRATION_PROMO_COUPON_CODE = 'UWCULTRATEAM';
 const REGISTRATION_PROMO_COUPON_DISCOUNT = 142.50; // 50% off one athlete only
 const REGISTRATION_NOFEE_COUPON_CODE = 'NOFEE'; // 100% off
 const CLASS_CAPACITY_MAX = 24;
+const CLASS_COUNT_ADJUSTMENTS = [
+    'Rising Competitors - Advanced (Ages 12-16)' => 7,
+    'Elite Wrestlers (Ages 14+)' => -7,
+];
 const CLASS_MANUALLY_CLOSED_NAMES = [
     'Rising Competitors - Foundation (Ages 11-13)',
 ];
@@ -181,6 +185,7 @@ if ($couponApplied && $couponDiscountAmount > 0) {
 // Capacity guard: if any selected class is full, skip checkout and place this submission on waitlist.
 $requestedClassCounts = build_requested_class_counts($athletes);
 $paidClassCounts = get_paid_class_counts_for_classes(array_values($allowedClasses));
+$paidClassCounts = apply_class_count_adjustments($paidClassCounts, CLASS_COUNT_ADJUSTMENTS, array_values($allowedClasses));
 $fullClasses = find_full_classes(
     $requestedClassCounts,
     $paidClassCounts,
@@ -648,6 +653,26 @@ function get_paid_class_counts_for_classes(array $knownClassNames): array
         }
     } finally {
         fclose($handle);
+    }
+
+    return $counts;
+}
+
+function apply_class_count_adjustments(array $counts, array $adjustments, array $knownClassNames): array
+{
+    foreach ($knownClassNames as $className) {
+        if (!isset($counts[$className])) {
+            $counts[$className] = 0;
+        }
+    }
+
+    foreach ($adjustments as $className => $delta) {
+        $canonical = canonical_class_name((string) $className);
+        if ($canonical === '' || !in_array($canonical, $knownClassNames, true)) {
+            continue;
+        }
+
+        $counts[$canonical] = max(0, (int) ($counts[$canonical] ?? 0) + (int) $delta);
     }
 
     return $counts;
