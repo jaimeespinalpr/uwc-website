@@ -58,9 +58,9 @@ $allowedClasses = [
 ];
 
 $allowedClassesByAge = [
-    '5-10' => ['future-champions'],
-    '11-13' => ['foundation', 'development', 'advanced-11-13'],
-    '14-plus' => ['advanced-11-13', 'elite-competition-team'],
+    '5-10' => ['future-champions', 'foundation', 'development', 'advanced-11-13', 'elite-competition-team'],
+    '11-13' => ['future-champions', 'foundation', 'development', 'advanced-11-13', 'elite-competition-team'],
+    '14-plus' => ['future-champions', 'foundation', 'development', 'advanced-11-13', 'elite-competition-team'],
 ];
 
 $experienceLabelMap = [

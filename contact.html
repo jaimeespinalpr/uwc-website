@@ -77,7 +77,7 @@
         <section class="form-card" aria-labelledby="family-form-title">
           <h3 id="family-form-title">Parent / Guardian Information</h3>
           <p>
-            Enter your information and add each athlete below. Class options are filtered by age group automatically.
+            Enter your information and add each athlete below. You can choose any class, and coaches will finalize placement.
           </p>
 
           <div class="form-grid">
@@ -403,19 +403,17 @@
         "11-13": "Ages 11-13",
         "14-plus": "Ages 14+"
       };
+      var ALL_CLASS_OPTIONS = [
+        { value: "future-champions", label: "Future Champions (Ages 5-10)" },
+        { value: "foundation", label: "Rising Competitors - Foundation (Ages 11-13)" },
+        { value: "development", label: "Rising Competitors - Development (Ages 11-13)" },
+        { value: "advanced-11-13", label: "Rising Competitors - Advanced (Ages 12-16)" },
+        { value: "elite-competition-team", label: "Elite Wrestlers (Ages 14+)" }
+      ];
       var CLASS_OPTIONS_BY_AGE = {
-        "5-10": [
-          { value: "future-champions", label: "Future Champions (Ages 5-10)" }
-        ],
-        "11-13": [
-          { value: "foundation", label: "Rising Competitors - Foundation (Ages 11-13)" },
-          { value: "development", label: "Rising Competitors - Development (Ages 11-13)" },
-          { value: "advanced-11-13", label: "Rising Competitors - Advanced (Ages 12-16)" }
-        ],
-        "14-plus": [
-          { value: "advanced-11-13", label: "Rising Competitors - Advanced (Ages 12-16)" },
-          { value: "elite-competition-team", label: "Elite Wrestlers (Ages 14+)" }
-        ]
+        "5-10": ALL_CLASS_OPTIONS,
+        "11-13": ALL_CLASS_OPTIONS,
+        "14-plus": ALL_CLASS_OPTIONS
       };
       var EXPERIENCE_OPTIONS = [
         { value: "", label: "Select level (optional)" },
@@ -699,8 +697,8 @@
           '    </select> </label>',
           '  </div>',
           '  <div class="field-row athlete-field-row">',
-          '    <label> Class Type <select name="class_interest[]" data-athlete-class disabled required>',
-          '      <option value="">Select age group first</option>',
+          '    <label> Class Type <select name="class_interest[]" data-athlete-class required>',
+          '      <option value="">Select class type</option>',
           '    </select> </label>',
           '    <label> Experience Level <select name="athlete_experience[]" data-athlete-experience></select> </label>',
           '  </div>',
@@ -784,9 +782,9 @@
 
         classSelect.innerHTML = "";
 
-        if (!ageValue || options.length === 0) {
+        if (options.length === 0) {
           classSelect.disabled = true;
-          appendOption(classSelect, "", "Select age group first");
+          appendOption(classSelect, "", "Select class type");
           return;
         }
 
