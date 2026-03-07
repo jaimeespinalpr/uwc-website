@@ -16,6 +16,9 @@ const REGISTRATION_PROMO_COUPON_CODE = 'UWCULTRATEAM';
 const REGISTRATION_PROMO_COUPON_DISCOUNT = 142.50; // 50% off one athlete only
 const REGISTRATION_NOFEE_COUPON_CODE = 'NOFEE'; // 100% off
 const CLASS_CAPACITY_MAX = 24;
+const CLASS_MANUALLY_CLOSED_NAMES = [
+    'Rising Competitors - Foundation (Ages 11-13)',
+];
 const STRIPE_REGISTRATION_SUBMISSIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
 const STRIPE_REGISTRATION_ERROR_LOG = __DIR__ . '/data/stripe_registration_errors.log';
 const STRIPE_PAYMENT_SUCCESS_LOG = __DIR__ . '/data/stripe_payment_success.csv';
@@ -178,7 +181,12 @@ if ($couponApplied && $couponDiscountAmount > 0) {
 // Capacity guard: if any selected class is full, skip checkout and place this submission on waitlist.
 $requestedClassCounts = build_requested_class_counts($athletes);
 $paidClassCounts = get_paid_class_counts_for_classes(array_values($allowedClasses));
-$fullClasses = find_full_classes($requestedClassCounts, $paidClassCounts, CLASS_CAPACITY_MAX);
+$fullClasses = find_full_classes(
+    $requestedClassCounts,
+    $paidClassCounts,
+    CLASS_CAPACITY_MAX,
+    CLASS_MANUALLY_CLOSED_NAMES
+);
 if (!empty($fullClasses)) {
     $waitlistId = 'uwc_wl_' . gmdate('Ymd_His') . '_' . substr(bin2hex(random_bytes(4)), 0, 8);
     $waitlistRecord = [
@@ -680,20 +688,39 @@ function get_paid_stripe_session_ids(): array
     return $sessionIdSet;
 }
 
-function find_full_classes(array $requestedClassCounts, array $paidClassCounts, int $capacityPerClass): array
+function find_full_classes(
+    array $requestedClassCounts,
+    array $paidClassCounts,
+    int $capacityPerClass,
+    array $manuallyClosedClassNames = []
+): array
 {
     $full = [];
+    $manuallyClosedLookup = [];
+    foreach ($manuallyClosedClassNames as $closedClassName) {
+        $canonical = canonical_class_name((string) $closedClassName);
+        if ($canonical !== '') {
+            $manuallyClosedLookup[$canonical] = true;
+        }
+    }
+
     foreach ($requestedClassCounts as $className => $requestedCount) {
         $requestedCount = (int) $requestedCount;
         $paidCount = (int) ($paidClassCounts[$className] ?? 0);
+        $manuallyClosed = isset($manuallyClosedLookup[$className]);
         $remaining = max(0, $capacityPerClass - $paidCount);
-        if ($requestedCount > $remaining) {
+        if ($manuallyClosed) {
+            $remaining = 0;
+        }
+
+        if ($manuallyClosed || $requestedCount > $remaining) {
             $full[] = [
                 'class_name' => $className,
                 'capacity' => $capacityPerClass,
                 'currently_paid' => $paidCount,
                 'remaining' => $remaining,
                 'requested_now' => $requestedCount,
+                'manually_closed' => $manuallyClosed ? 'yes' : 'no',
             ];
         }
     }

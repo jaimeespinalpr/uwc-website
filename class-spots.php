@@ -2,6 +2,9 @@
 declare(strict_types=1);
 
 const CLASS_SPOTS_CAPACITY = 24;
+const CLASS_SPOTS_MANUALLY_CLOSED_KEYS = [
+    'foundation',
+];
 const CLASS_SPOTS_REGISTRATIONS_CSV = __DIR__ . '/data/stripe_registration_submissions.csv';
 const CLASS_SPOTS_PAID_LOG_CSV = __DIR__ . '/data/stripe_payment_success.csv';
 const CLASS_SPOTS_WAITLIST_CSV = __DIR__ . '/data/stripe_class_waitlist.csv';
@@ -32,6 +35,10 @@ foreach ($classesByKey as $classKey => $className) {
     $paid = (int) ($paidCountsByName[$className] ?? 0);
     $waitlist = (int) ($waitlistCountsByName[$className] ?? 0);
     $spotsLeft = max(0, CLASS_SPOTS_CAPACITY - $paid);
+    $manuallyClosed = in_array($classKey, CLASS_SPOTS_MANUALLY_CLOSED_KEYS, true);
+    if ($manuallyClosed) {
+        $spotsLeft = 0;
+    }
 
     $classes[$classKey] = [
         'class_name' => $className,
@@ -39,7 +46,8 @@ foreach ($classesByKey as $classKey => $className) {
         'paid' => $paid,
         'spots_left' => $spotsLeft,
         'waitlist' => $waitlist,
-        'is_full' => $spotsLeft <= 0,
+        'is_full' => $manuallyClosed || $spotsLeft <= 0,
+        'manually_closed' => $manuallyClosed,
     ];
 }
 

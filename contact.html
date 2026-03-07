@@ -18,7 +18,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2" />
   <link rel="shortcut icon" href="/favicon.png?v=2" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
-  <link rel="stylesheet" href="styles.css?v=usa-red-30" />
+  <link rel="stylesheet" href="styles.css?v=usa-red-31" />
 </head>
 <body class="register-page">
   <header class="site-header">
@@ -794,23 +794,44 @@
           appendOption(classSelect, "", "Select class type");
         }
 
+        var hasOpenOption = false;
         options.forEach(function (item) {
-          appendOption(classSelect, item.value, buildClassOptionLabel(item.value, item.label));
+          var classData = liveSpotsByClass[item.value];
+          var isFull = !!(classData && classData.is_full);
+          appendOption(classSelect, item.value, buildClassOptionLabel(item.value, item.label), isFull);
+          if (!isFull) {
+            hasOpenOption = true;
+          }
         });
 
-        if (previousValue && options.some(function (item) { return item.value === previousValue; })) {
+        if (previousValue && options.some(function (item) {
+          if (item.value !== previousValue) return false;
+          var classData = liveSpotsByClass[item.value];
+          return !(classData && classData.is_full);
+        })) {
           classSelect.value = previousValue;
         } else if (options.length === 1) {
-          classSelect.value = options[0].value;
+          var onlyClassData = liveSpotsByClass[options[0].value];
+          if (onlyClassData && onlyClassData.is_full) {
+            classSelect.value = "";
+          } else {
+            classSelect.value = options[0].value;
+          }
         } else {
           classSelect.value = "";
         }
+
+        if (!hasOpenOption) {
+          classSelect.value = "";
+          classSelect.disabled = true;
+        }
       }
 
-      function appendOption(select, value, label) {
+      function appendOption(select, value, label, disabled) {
         var option = document.createElement("option");
         option.value = value;
         option.textContent = label;
+        option.disabled = !!disabled;
         select.appendChild(option);
       }
 
